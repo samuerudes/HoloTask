@@ -211,7 +211,7 @@ public class MainActivity extends AppCompatActivity {
 
                                         Toast.makeText(MainActivity.this, "Task created successfully!", Toast.LENGTH_SHORT).show();
 
-                                        String[] newTaskData = {taskID, taskName, status, deadline, description};
+                                        String[] newTaskData = {taskName, status, deadline, description};
 
                                         // Update data list without overwriting
                                         data.add(newTaskData);  // Create newTaskData array as before

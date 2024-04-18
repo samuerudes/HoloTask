@@ -60,10 +60,10 @@ public class CustomAdapter extends BaseAdapter {
 
         // Set text for each sub-item
         String[] taskData = data.get(position); // Get the String[] representing a task
-        taskText.setText(taskData[0]); // Access elements within the String[]
-        statusText.setText(taskData[1]);
-        deadlineText.setText(taskData[2]);
-        descriptionText.setText(taskData[3]);
+        taskText.setText(taskData[1]); // Access elements within the String[]
+        statusText.setText(taskData[2]);
+        deadlineText.setText(taskData[3]);
+        descriptionText.setText(taskData[4]);
 
         return convertView;
 
