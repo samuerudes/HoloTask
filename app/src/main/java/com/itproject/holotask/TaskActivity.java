@@ -52,7 +52,7 @@ public class TaskActivity extends AppCompatActivity {
         TextView timeRemainTextView = findViewById(R.id.timeRemain);
         Button backButton = findViewById(R.id.backButton);
         Button editButton = findViewById(R.id.editTaskButton);
-
+        Button deleteButton = findViewById(R.id.deleteTaskButton);
 
         backButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -61,7 +61,6 @@ public class TaskActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
-
         // Retrieve task data passed from MainActivity
         Intent intent = getIntent();
         String taskName = intent.getStringExtra("taskName");
@@ -115,7 +114,74 @@ public class TaskActivity extends AppCompatActivity {
                 showEditTaskDialog(taskID); // Pass taskID and other details to dialog method
             }
         });
+        deleteButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showDeleteTaskConfirmationDialog(taskID); // Pass taskID to dialog method
+            }
+        });
     }
+
+    private void showDeleteTaskConfirmationDialog(String taskID) {
+        // Create an AlertDialog builder
+        AlertDialog.Builder builder = new AlertDialog.Builder(TaskActivity.this);
+        builder.setTitle("Confirm Delete");
+        builder.setMessage("Are you sure you want to delete this task?");
+
+        // Add positive and negative buttons
+        builder.setPositiveButton("Delete", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                deleteTaskInFirestore(taskID);  // Call delete method
+            }
+        });
+
+        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+
+        // Show the confirmation dialog
+        builder.show();
+    }
+
+    // Delete task in Firestore (assuming Firebase is already set up)
+
+
+    private void deleteTaskInFirestore(String taskID) {
+        // Get an instance of Firebase Firestore
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+        db.collection("UserTasks")
+                .whereEqualTo("taskID", taskID)
+                .get()
+                .addOnSuccessListener(queryDocumentSnapshots -> {
+                    for (QueryDocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
+                        documentSnapshot.getReference().delete()
+                                .addOnSuccessListener(aVoid -> {
+                                    Intent resultIntent = new Intent();
+                                    resultIntent.putExtra("deletedTaskID", taskID); // Add deleted task ID as an extra
+                                    setResult(RESULT_OK, resultIntent); // Set result code to OK with extra data
+                                    finish();  // Finish activity
+                                })
+                                .addOnFailureListener(e -> {
+                                    Log.w("Firestore", "Error deleting document", e);
+                                    Intent resultIntent = new Intent();
+                                    setResult(RESULT_CANCELED, resultIntent); // Set result code to cancelled on failure
+                                    finish();  // Finish activity
+                                });
+                    }
+                })
+                .addOnFailureListener(e -> {
+                    Log.w("Firestore", "Error querying documents", e);
+                    Intent resultIntent = new Intent();
+                    setResult(RESULT_CANCELED, resultIntent); // Set result code to cancelled on failure
+                    finish();  // Finish activity
+                });
+    }
+
 
     private void showEditTaskDialog(String taskID) {
         // Retrieve task data from Intent

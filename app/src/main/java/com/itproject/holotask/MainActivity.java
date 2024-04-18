@@ -1,6 +1,7 @@
 package com.itproject.holotask;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDialogFragment;
 import androidx.core.app.ActivityCompat;
@@ -61,8 +62,6 @@ public class MainActivity extends AppCompatActivity {
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
     private List<String[]> data = new ArrayList<>();  // Declare and initialize data list
 
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -110,30 +109,30 @@ public class MainActivity extends AppCompatActivity {
         createTaskButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                        // Create an AlertDialog to prompt for task details
+                // Create an AlertDialog to prompt for task details
 
-                        AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
-                        builder.setTitle("Create New Task");
+                AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+                builder.setTitle("Create New Task");
 
-                        LinearLayout layout = new LinearLayout(MainActivity.this);
-                        layout.setOrientation(LinearLayout.VERTICAL); // Arrange fields vertically
+                LinearLayout layout = new LinearLayout(MainActivity.this);
+                layout.setOrientation(LinearLayout.VERTICAL); // Arrange fields vertically
 
-                        // Add input fields for task details
-                        final EditText taskNameInput = new EditText(MainActivity.this);
-                        taskNameInput.setHint("Task Name");
-                        layout.addView(taskNameInput);
+                // Add input fields for task details
+                final EditText taskNameInput = new EditText(MainActivity.this);
+                taskNameInput.setHint("Task Name");
+                layout.addView(taskNameInput);
 
-                        final EditText statusInput = new EditText(MainActivity.this);
-                        statusInput.setHint("Status");
-                        layout.addView(statusInput);
+                final EditText statusInput = new EditText(MainActivity.this);
+                statusInput.setHint("Status");
+                layout.addView(statusInput);
 
-                        final EditText deadlineInput = new EditText(MainActivity.this);
-                        deadlineInput.setHint("Due Date");
-                        deadlineInput.setFocusable(false);
-                        layout.addView(deadlineInput);
+                final EditText deadlineInput = new EditText(MainActivity.this);
+                deadlineInput.setHint("Due Date");
+                deadlineInput.setFocusable(false);
+                layout.addView(deadlineInput);
 
-                        deadlineInput.setOnClickListener(new View.OnClickListener() {
-                            @Override
+                deadlineInput.setOnClickListener(new View.OnClickListener() {
+                    @Override
                     public void onClick(View v) {
                         // Get current date
                         final Calendar calendar = Calendar.getInstance();
@@ -211,7 +210,7 @@ public class MainActivity extends AppCompatActivity {
 
                                         Toast.makeText(MainActivity.this, "Task created successfully!", Toast.LENGTH_SHORT).show();
 
-                                        String[] newTaskData = {taskName, status, deadline, description};
+                                        String[] newTaskData = {taskID, taskName, status, deadline, description};
 
                                         // Update data list without overwriting
                                         data.add(newTaskData);  // Create newTaskData array as before
@@ -299,7 +298,4 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
-}}
-
-
-
+    }}
