@@ -9,9 +9,11 @@ import androidx.core.content.ContextCompat;
 
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 
 import java.text.ParseException;
@@ -54,13 +56,27 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements TaskDeletionHandler.OnTaskDeletedListener {
 
     private Calendar mCalendarService;
     private GridView gridView;
     private CustomAdapter adapter;
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
     private List<String[]> data = new ArrayList<>();  // Declare and initialize data list
+
+    @Override
+    public void onTaskDeleted(String deletedTaskID) {
+        // Remove the deleted task from the data list
+        for (int i = 0; i < data.size(); i++) {
+            if (data.get(i)[0].equals(deletedTaskID)) {
+                data.remove(i);
+                break;
+            }
+        }
+
+        // Notify the adapter about the data change
+        adapter.notifyDataSetChanged();
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,7 +86,6 @@ public class MainActivity extends AppCompatActivity {
         // Get references to views
         gridView = findViewById(R.id.gridView);
         Button createTaskButton = findViewById(R.id.button8);
-
 
         // Fetch tasks from Firestore on startup
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
@@ -298,4 +313,7 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
-    }}
+
+    }
+
+}
