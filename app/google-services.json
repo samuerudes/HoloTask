@@ -1,0 +1,43 @@
+{
+  "project_info": {
+    "project_number": "963735918329",
+    "project_id": "holotask-888e5",
+    "storage_bucket": "holotask-888e5.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:963735918329:android:f88b2762abd93a0ccf3428",
+        "android_client_info": {
+          "package_name": "com.itproject.holotask"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "963735918329-qno70ukjv5gfditqm6h0897o5kp1ahuc.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.itproject.holotask",
+            "certificate_hash": "c213394283f991964b52f978618eb00d1e8791c0"
+          }
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB8B_6a49i9WZldo2ZOxMttpFXCB7aJBT0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "963735918329-aj2ijnmq0tsfdlco8q8015om8uql5528.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

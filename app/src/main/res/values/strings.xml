@@ -1,0 +1,26 @@
+<resources>
+    <string name="stay_updated_on_your_tasks_and_events">Stay Updated on Your Tasks and Events</string>
+    <string name="username">Username</string>
+    <string name="password">Password</string>
+    <string name="forgot_password">Forgot Password?</string>
+    <string name="sign_up">Sign Up</string>
+    <string name="sign_in">Sign In</string>
+    <string name="sign_in_with_google">Sign in with Google</string>
+    <string name="sign_in_with_discord">Sign in with Discord</string>
+    <string name="new_to_holotask_join_now">New to Holotask? Join now</string>
+    <string name="register">Register</string>
+    <string name="continue_with_google">Continue with Google</string>
+    <string name="continue_with_discord">Continue with Discord</string>
+    <string name="confirm_password">Confirm Password</string>
+    <string name="click_to_login">Click to Login</string>
+    <string name="email">Email</string>
+    <string name="already_have_an_account_login_now">Already have an account? Login Now</string>
+    <string name="default_web_client_id">963735918329-aj2ijnmq0tsfdlco8q8015om8uql5528.apps.googleusercontent.com</string>
+    <string name="accountDetailsusername">Username:</string>
+    <string name="enter_username">Enter username</string>
+    <string name="user_discord">User Discord:</string>
+    <string name="enter_user_discord_id">Enter user Discord ID</string>
+    <string name="new_password">New Password:</string>
+    <string name="enter_new_password">Enter new password</string>
+    <string name="save_changes">Save Changes</string>
+</resources>
