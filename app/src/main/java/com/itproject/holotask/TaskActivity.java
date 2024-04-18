@@ -24,6 +24,7 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -213,37 +214,39 @@ public class TaskActivity extends AppCompatActivity {
     // Update task in Firestore (assuming Firebase is already set up)
     private void updateTaskInFirestore(String taskID, String editedTaskName, String editedDeadline, String editedDescription) {
         // Get an instance of Firebase Firestore
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
 
         if (taskID == null) {
             Log.e("Firestore", "Task ID is null!");
             return; // Handle null case (e.g., show error message)
         }
 
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
-        DocumentReference docRef = db.collection("UserTasks").document(taskID);
-
-
-        // Create a HashMap to store updated task data
-        HashMap<String, Object> updatedTask = new HashMap<>();
-        updatedTask.put("taskName", editedTaskName);
-        updatedTask.put("endDateTime", editedDeadline);  // Assuming "endDateTime" stores deadline
-        updatedTask.put("taskDescription", editedDescription);
-
-        // Update task in Firestore using DocumentReference
-        db.collection("UserTasks").document(taskID)
-                .update(updatedTask)
-                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void aVoid) {
-                        Log.d("Firestore", "Task updated successfully!");
+        // Perform a query to find the document(s) with the matching taskID
+        db.collection("UserTasks")
+                .whereEqualTo("taskID", taskID)
+                .get()
+                .addOnSuccessListener(queryDocumentSnapshots -> {
+                    for (QueryDocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
+                        // Update each matching document with the new data
+                        documentSnapshot.getReference().update(
+                                "taskName", editedTaskName,
+                                "endDateTime", editedDeadline,
+                                "taskDescription", editedDescription
+                        ).addOnSuccessListener(aVoid -> {
+                            Log.d("Firestore", "Document successfully updated!");
+                            Toast.makeText(TaskActivity.this, "Task edited successfully!", Toast.LENGTH_SHORT).show();
+                        }).addOnFailureListener(e -> {
+                            Log.w("Firestore", "Error updating document", e);
+                            Toast.makeText(TaskActivity.this, "Failed to update task!", Toast.LENGTH_SHORT).show();
+                        });
                     }
                 })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Log.w("Firestore", "Error updating task", e);
-                        Toast.makeText(TaskActivity.this, "Failed to update task!", Toast.LENGTH_SHORT).show();
-                    }
+                .addOnFailureListener(e -> {
+                    Log.w("Firestore", "Error querying documents", e);
+                    Toast.makeText(TaskActivity.this, "Failed to update task!", Toast.LENGTH_SHORT).show();
                 });
     }
+
 }
+
+

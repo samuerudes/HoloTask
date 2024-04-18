@@ -88,11 +88,12 @@ public class MainActivity extends AppCompatActivity {
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
                         for (QueryDocumentSnapshot document : task.getResult()) {
+                            String taskID = document.getString("taskID");
                             String taskName = document.getString("taskName");
                             String status = document.getString("taskStatus");
                             String deadline = document.getString("endDateTime");
                             String description = document.getString("taskDescription");
-                            data.add(new String[]{taskName, status, deadline, description});
+                            data.add(new String[]{taskID, taskName, status, deadline, description});
                         }
 
                         // Create adapter with initial data
@@ -109,30 +110,30 @@ public class MainActivity extends AppCompatActivity {
         createTaskButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // Create an AlertDialog to prompt for task details
+                        // Create an AlertDialog to prompt for task details
 
-                AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
-                builder.setTitle("Create New Task");
+                        AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+                        builder.setTitle("Create New Task");
 
-                LinearLayout layout = new LinearLayout(MainActivity.this);
-                layout.setOrientation(LinearLayout.VERTICAL); // Arrange fields vertically
+                        LinearLayout layout = new LinearLayout(MainActivity.this);
+                        layout.setOrientation(LinearLayout.VERTICAL); // Arrange fields vertically
 
-                // Add input fields for task details
-                final EditText taskNameInput = new EditText(MainActivity.this);
-                taskNameInput.setHint("Task Name");
-                layout.addView(taskNameInput);
+                        // Add input fields for task details
+                        final EditText taskNameInput = new EditText(MainActivity.this);
+                        taskNameInput.setHint("Task Name");
+                        layout.addView(taskNameInput);
 
-                final EditText statusInput = new EditText(MainActivity.this);
-                statusInput.setHint("Status");
-                layout.addView(statusInput);
+                        final EditText statusInput = new EditText(MainActivity.this);
+                        statusInput.setHint("Status");
+                        layout.addView(statusInput);
 
-                final EditText deadlineInput = new EditText(MainActivity.this);
-                deadlineInput.setHint("Due Date");
-                deadlineInput.setFocusable(false);
-                layout.addView(deadlineInput);
+                        final EditText deadlineInput = new EditText(MainActivity.this);
+                        deadlineInput.setHint("Due Date");
+                        deadlineInput.setFocusable(false);
+                        layout.addView(deadlineInput);
 
-                deadlineInput.setOnClickListener(new View.OnClickListener() {
-                    @Override
+                        deadlineInput.setOnClickListener(new View.OnClickListener() {
+                            @Override
                     public void onClick(View v) {
                         // Get current date
                         final Calendar calendar = Calendar.getInstance();
@@ -210,7 +211,7 @@ public class MainActivity extends AppCompatActivity {
 
                                         Toast.makeText(MainActivity.this, "Task created successfully!", Toast.LENGTH_SHORT).show();
 
-                                        String[] newTaskData = {taskName, status, deadline, description};
+                                        String[] newTaskData = {taskID, taskName, status, deadline, description};
 
                                         // Update data list without overwriting
                                         data.add(newTaskData);  // Create newTaskData array as before
@@ -280,14 +281,16 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 String[] taskData = data.get(position);  // Retrieve selected task data
-                String description = taskData[3];
-                String deadline = taskData[2];
-                String status = taskData[1];
-                String taskName = taskData[0];
+                String description = taskData[4];
+                String deadline = taskData[3];
+                String status = taskData[2];
+                String taskName = taskData[1];
+                String taskID = taskData[0];
 
 
                 //  launch TaskActivity and pass data
                 Intent intent = new Intent(MainActivity.this, TaskActivity.class);
+                intent.putExtra("taskID", taskID);
                 intent.putExtra("taskName", taskName);
                 intent.putExtra("description", description);
                 intent.putExtra("status", status);
