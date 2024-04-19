@@ -1,6 +1,7 @@
 package com.itproject.holotask;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDialogFragment;
 import androidx.core.app.ActivityCompat;
@@ -8,9 +9,11 @@ import androidx.core.content.ContextCompat;
 
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 
 import java.text.ParseException;
@@ -53,7 +56,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements TaskDeletionHandler.OnTaskDeletedListener {
 
     private Calendar mCalendarService;
     private GridView gridView;
@@ -62,6 +65,19 @@ public class MainActivity extends AppCompatActivity {
     private List<String[]> data = new ArrayList<>();  // Declare and initialize data list
 
 
+    @Override
+    public void onTaskDeleted(String deletedTaskID) {
+        // Remove the deleted task from the data list
+        for (int i = 0; i < data.size(); i++) {
+            if (data.get(i)[0].equals(deletedTaskID)) {
+                data.remove(i);
+                break;
+            }
+        }
+
+        // Notify the adapter about the data change
+        adapter.notifyDataSetChanged();
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,7 +87,6 @@ public class MainActivity extends AppCompatActivity {
         // Get references to views
         gridView = findViewById(R.id.gridView);
         Button createTaskButton = findViewById(R.id.button8);
-
 
         // Fetch tasks from Firestore on startup
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
@@ -106,34 +121,33 @@ public class MainActivity extends AppCompatActivity {
 
         // Set click listener for each item
 
-
         createTaskButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                        // Create an AlertDialog to prompt for task details
+                // Create an AlertDialog to prompt for task details
 
-                        AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
-                        builder.setTitle("Create New Task");
+                AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+                builder.setTitle("Create New Task");
 
-                        LinearLayout layout = new LinearLayout(MainActivity.this);
-                        layout.setOrientation(LinearLayout.VERTICAL); // Arrange fields vertically
+                LinearLayout layout = new LinearLayout(MainActivity.this);
+                layout.setOrientation(LinearLayout.VERTICAL); // Arrange fields vertically
 
-                        // Add input fields for task details
-                        final EditText taskNameInput = new EditText(MainActivity.this);
-                        taskNameInput.setHint("Task Name");
-                        layout.addView(taskNameInput);
+                // Add input fields for task details
+                final EditText taskNameInput = new EditText(MainActivity.this);
+                taskNameInput.setHint("Task Name");
+                layout.addView(taskNameInput);
 
-                        final EditText statusInput = new EditText(MainActivity.this);
-                        statusInput.setHint("Status");
-                        layout.addView(statusInput);
+                final EditText statusInput = new EditText(MainActivity.this);
+                statusInput.setHint("Status");
+                layout.addView(statusInput);
 
-                        final EditText deadlineInput = new EditText(MainActivity.this);
-                        deadlineInput.setHint("Due Date");
-                        deadlineInput.setFocusable(false);
-                        layout.addView(deadlineInput);
+                final EditText deadlineInput = new EditText(MainActivity.this);
+                deadlineInput.setHint("Due Date");
+                deadlineInput.setFocusable(false);
+                layout.addView(deadlineInput);
 
-                        deadlineInput.setOnClickListener(new View.OnClickListener() {
-                            @Override
+                deadlineInput.setOnClickListener(new View.OnClickListener() {
+                    @Override
                     public void onClick(View v) {
                         // Get current date
                         final Calendar calendar = Calendar.getInstance();
@@ -211,7 +225,7 @@ public class MainActivity extends AppCompatActivity {
 
                                         Toast.makeText(MainActivity.this, "Task created successfully!", Toast.LENGTH_SHORT).show();
 
-                                        String[] newTaskData = {taskName, status, deadline, description};
+                                        String[] newTaskData = {taskID, taskName, status, deadline, description};
 
                                         // Update data list without overwriting
                                         data.add(newTaskData);  // Create newTaskData array as before
@@ -277,6 +291,8 @@ public class MainActivity extends AppCompatActivity {
                 builder.show();
             }
         });
+
+
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -299,7 +315,7 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
-}}
 
+    }
 
-
+}
