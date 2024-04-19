@@ -38,7 +38,9 @@ public class TaskActivity extends AppCompatActivity {
     TextView deadlineTextView;
     TextView descTextView;
 
-    SeekBar dragProgressBar;
+    private SeekBar seekBar;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,6 +56,9 @@ public class TaskActivity extends AppCompatActivity {
         Button editButton = findViewById(R.id.editTaskButton);
         Button deleteButton = findViewById(R.id.deleteTaskButton);
         Button completeTaskButton = findViewById(R.id.completeTaskButton);
+        seekBar = findViewById(R.id.seekBar);
+
+        SharedPreferences sharedPref = getSharedPreferences("taskProgress", MODE_PRIVATE);
 
 
         backButton.setOnClickListener(new View.OnClickListener() {
@@ -69,6 +74,9 @@ public class TaskActivity extends AppCompatActivity {
         String deadline = intent.getStringExtra("deadline");
         String description = intent.getStringExtra("description");
         String taskID = intent.getStringExtra("taskID"); // Assuming taskID is passed as an extra
+
+        int seekbarProgress = sharedPref.getInt(taskID, 0);
+        seekBar.setProgress(seekbarProgress);
 
         // Set TextViews with retrieved data
         TaskName.setText(taskName);
@@ -130,8 +138,26 @@ public class TaskActivity extends AppCompatActivity {
                 TaskDeletionHandler.deleteTask(TaskActivity.this, taskID, null); // Pass context and taskID to delete method
             }
         });
-    }
 
+        seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                // Update progress in SharedPreferences
+                SharedPreferences sharedPref = getSharedPreferences("taskProgress", MODE_PRIVATE);
+                sharedPref.edit().putInt(taskID, progress).apply();
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+
+            }
+        });
+    }
 
 
     private void showEditTaskDialog(String taskID) {
