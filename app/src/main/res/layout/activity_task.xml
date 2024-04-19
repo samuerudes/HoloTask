@@ -117,14 +117,14 @@
 
     </ScrollView>
 
-    <ProgressBar
-        android:id="@+id/progressBar"
-        style="?android:attr/progressBarStyleHorizontal"
+    <SeekBar
+        android:id="@+id/seekBar"
         android:layout_width="250dp"
         android:layout_height="80dp"
         android:layout_marginTop="560dp"
         android:layout_marginStart="80dp"
-        android:gravity="center"/>
+        android:gravity="center"
+        />
 
     <Button
         android:id="@+id/completeTaskButton"
@@ -157,6 +157,7 @@
         android:layout_marginTop="730dp"
         android:layout_marginStart="155dp"
         android:text="BACK" />
+
 
 
 </RelativeLayout>
