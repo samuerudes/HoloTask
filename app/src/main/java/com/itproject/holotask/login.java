@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -49,8 +50,8 @@ public class login extends AppCompatActivity {
         super.onStart();
         // Check if user is signed in (non-null) and update UI accordingly.
         FirebaseUser currentUser = mAuth.getCurrentUser();
-        if(currentUser != null){
-            redirectToMainActivity();
+        if (currentUser != null) {
+            startMainActivity();
         }
     }
 
@@ -117,7 +118,7 @@ public class login extends AppCompatActivity {
                                 if (task.isSuccessful()) {
                                     Toast.makeText(getApplicationContext(), "Authentication successful.",
                                             Toast.LENGTH_SHORT).show();
-                                    redirectToMainActivity();
+                                    startMainActivity();
                                 } else {
                                     Toast.makeText(login.this, "Authentication failed.",
                                             Toast.LENGTH_SHORT).show();
@@ -177,8 +178,7 @@ public class login extends AppCompatActivity {
                             FirebaseUser user = mAuth.getCurrentUser();
 
                             // Your existing code to update UI or store user information
-
-                            redirectToMainActivity();
+                            startMainActivity();
                         } else {
                             Toast.makeText(login.this, "Authentication Failed.", Toast.LENGTH_SHORT).show();
                         }
@@ -186,18 +186,10 @@ public class login extends AppCompatActivity {
                 });
     }
 
-    // Method to redirect to the login activity
-    private void redirectToMainActivity() {
-        // Create an Intent to start the login activity
-        Intent intent = new Intent(login.this, MainActivity.class);
-
-        // Add flags to clear the previous activities from the stack
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-
-        // Start the login activity
-        startActivity(intent);
-
-        // Finish the current activity to prevent the user from going back to the registration page
+    private void startMainActivity() {
+        generalMethods.startMainActivity(login.this);
         finish();
     }
 }
+
+    // Method to redirect to the login activity

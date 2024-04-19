@@ -232,7 +232,7 @@ public class TaskActivity extends AppCompatActivity {
                 descTextView.setText(editedDescription);
 
                 Toast.makeText(TaskActivity.this, "Task edited successfully!", Toast.LENGTH_SHORT).show();
-
+                redirectToMainActivity();
 
             }
         });
@@ -269,6 +269,9 @@ public class TaskActivity extends AppCompatActivity {
                                 .addOnSuccessListener(aVoid -> {
                                     // Show a toast indicating success
                                     Toast.makeText(TaskActivity.this, "Task completed successfully!", Toast.LENGTH_SHORT).show();
+
+                                    // Redirect to MainActivity upon successful completion
+                                    redirectToMainActivity();
                                 })
                                 .addOnFailureListener(e -> {
                                     // Show a toast indicating failure
@@ -315,6 +318,12 @@ public class TaskActivity extends AppCompatActivity {
                     Log.w("Firestore", "Error querying documents", e);
                     Toast.makeText(TaskActivity.this, "Failed to update task!", Toast.LENGTH_SHORT).show();
                 });
+    }
+
+    private void redirectToMainActivity() {
+        Intent intent = new Intent(TaskActivity.this, MainActivity.class);
+        startActivity(intent);
+        finish(); // Finish current activity to prevent going back to TaskActivity
     }
 
 }
