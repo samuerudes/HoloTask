@@ -64,6 +64,7 @@ public class MainActivity extends AppCompatActivity implements TaskDeletionHandl
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
     private List<String[]> data = new ArrayList<>();  // Declare and initialize data list
 
+
     @Override
     public void onTaskDeleted(String deletedTaskID) {
         // Remove the deleted task from the data list
@@ -119,7 +120,6 @@ public class MainActivity extends AppCompatActivity implements TaskDeletionHandl
                 });
 
         // Set click listener for each item
-
 
         createTaskButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -291,6 +291,8 @@ public class MainActivity extends AppCompatActivity implements TaskDeletionHandl
                 builder.show();
             }
         });
+
+
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {

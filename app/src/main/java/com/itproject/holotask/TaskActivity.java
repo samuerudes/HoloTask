@@ -53,6 +53,8 @@ public class TaskActivity extends AppCompatActivity {
         Button backButton = findViewById(R.id.backButton);
         Button editButton = findViewById(R.id.editTaskButton);
         Button deleteButton = findViewById(R.id.deleteTaskButton);
+        Button completeTaskButton = findViewById(R.id.completeTaskButton);
+
 
         backButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -74,6 +76,14 @@ public class TaskActivity extends AppCompatActivity {
         descTextView.setText(description);
 
         String deadlineString = intent.getStringExtra("deadline");
+
+        completeTaskButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Call a method to update the task status to "Complete"
+                updateTaskStatusToComplete(taskID);
+            }
+        });
 
 // Format deadline string to Date object (assuming format matches parsing)
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");  // Adjust format if needed
@@ -218,6 +228,33 @@ public class TaskActivity extends AppCompatActivity {
         return dateFormat.format(date);
     }
 
+    private void updateTaskStatusToComplete(String taskID) {
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+        db.collection("UserTasks")
+                .whereEqualTo("taskID", taskID)
+                .get()
+                .addOnSuccessListener(queryDocumentSnapshots -> {
+                    for (QueryDocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
+                        // Update the task status to "Completed"
+                        db.collection("UserTasks")
+                                .document(documentSnapshot.getId())
+                                .update("taskStatus", "Completed")
+                                .addOnSuccessListener(aVoid -> {
+                                    // Show a toast indicating success
+                                    Toast.makeText(TaskActivity.this, "Task completed successfully!", Toast.LENGTH_SHORT).show();
+                                })
+                                .addOnFailureListener(e -> {
+                                    // Show a toast indicating failure
+                                    Toast.makeText(TaskActivity.this, "Failed to complete task!", Toast.LENGTH_SHORT).show();
+                                });
+                    }
+                })
+                .addOnFailureListener(e -> {
+                    // Show a toast indicating failure to retrieve the document
+                    Toast.makeText(TaskActivity.this, "Failed to retrieve task!", Toast.LENGTH_SHORT).show();
+                });
+    }
     // Update task in Firestore (assuming Firebase is already set up)
     private void updateTaskInFirestore(String taskID, String editedTaskName, String editedDeadline, String editedDescription) {
         // Get an instance of Firebase Firestore
