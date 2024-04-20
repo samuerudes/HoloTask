@@ -1,19 +1,13 @@
 package com.itproject.holotask;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
+import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.app.AppCompatDialogFragment;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
+import androidx.appcompat.widget.Toolbar;
+import androidx.drawerlayout.widget.DrawerLayout;
 
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
-import android.content.BroadcastReceiver;
-import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.os.Bundle;
 
 import java.text.ParseException;
@@ -23,33 +17,21 @@ import android.provider.CalendarContract;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
-import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.GridView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
-import com.google.android.gms.auth.api.signin.GoogleSignInClient;
-import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.common.api.Scope;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
-// Import FirebaseFirestore
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
+import android.view.MenuItem;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
@@ -60,12 +42,14 @@ import java.util.UUID;
 
 public class MainActivity extends AppCompatActivity implements TaskDeletionHandler.OnTaskDeletedListener {
 
+    private DrawerLayout drawerLayout;
+    private ActionBarDrawerToggle drawerToggle;
+    private NavigationView navigationView;
     private Calendar mCalendarService;
     private GridView gridView;
     private CustomAdapter adapter;
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
     private List<String[]> data = new ArrayList<>();  // Declare and initialize data list
-
 
     @Override
     public void onTaskDeleted(String deletedTaskID) {
@@ -84,6 +68,49 @@ public class MainActivity extends AppCompatActivity implements TaskDeletionHandl
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
+        drawerLayout = findViewById(R.id.drawer_layout);
+        navigationView = findViewById(R.id.nav_view);
+
+        // Set up navigation menu using navigationManager
+        navigationManager.setupNavigationMenu(MainActivity.this, drawerLayout, navigationView, toolbar);
+
+        // Find the greetingTextView in the navigation header view
+        View headerView = navigationView.getHeaderView(0);
+        TextView greetingTextView = headerView.findViewById(R.id.greetingTextView);
+
+        // Retrieve the username from Firestore (replace with your actual logic to fetch username)
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user != null) {
+            FirebaseFirestore db = FirebaseFirestore.getInstance();
+            String userId = user.getUid();
+
+            db.collection("Users")
+                    .document(userId)
+                    .get()
+                    .addOnSuccessListener(documentSnapshot -> {
+                        if (documentSnapshot.exists()) {
+                            String username = documentSnapshot.getString("userName");
+                            greetingTextView.setText("Hello, " + username + "!");
+                        }
+                    })
+                    .addOnFailureListener(e -> {
+                        Log.e("MainActivity", "Error fetching username", e);
+                    });
+        }
+        // Set navigation item click listener
+        navigationView.setNavigationItemSelectedListener(item -> {
+            // Store the item in a final reference
+            final MenuItem menuItem = item;
+
+            // Handle navigation item clicks using navigationManager
+            navigationManager.handleNavigationItemClick(MainActivity.this, menuItem, drawerLayout);
+            drawerLayout.closeDrawers();
+            return true;
+        });
 
         // Initialize GridView and Adapter
         gridView = findViewById(R.id.gridView);
@@ -322,5 +349,22 @@ public class MainActivity extends AppCompatActivity implements TaskDeletionHandl
         intent.putExtra("description", taskData[4]);
         startActivity(intent);
     }
+    private void logoutUser() {
+        // Implement your logout logic here
+        // For example:
+        FirebaseAuth.getInstance().signOut();
+        startActivity(new Intent(MainActivity.this, login.class));
+        finish(); // Close MainActivity after logout
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle toolbar item clicks (e.g., menu icon)
+        if (drawerToggle.onOptionsItemSelected(item)) {
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
 }
 

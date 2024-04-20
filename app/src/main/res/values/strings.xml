@@ -29,4 +29,7 @@
     <string name="add_to_google_calendar">Add to Google Calendar</string>
     <string name="category_of_tasks">Your Tasks</string>
     <string name="filter">Filter</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="hello_user">Hello, User!</string>
 </resources>

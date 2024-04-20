@@ -2,4 +2,9 @@
 <resources>
     <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
     </style>
+    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.MaterialComponents.Light">
+        <!-- Define popup overlay attributes -->
+        <item name="android:colorBackground">@color/white</item>
+        <!-- Other popup overlay attributes -->
+    </style>
 </resources>
