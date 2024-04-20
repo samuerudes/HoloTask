@@ -131,9 +131,48 @@ public class register extends AppCompatActivity {
                                 progressBar.setVisibility(View.GONE);
                                 if (task.isSuccessful()) {
                                     showToast("Account created.");
-                                    redirectToMainActivity();
+
+                                    // Firebase user after successful creation
+                                    FirebaseUser user = mAuth.getCurrentUser();
+
+                                    // Proceed with Firestore document creation
+                                    if (user != null) {
+                                        String userGmail = user.getEmail();
+                                        String userName = userGmail.split("@")[0];
+
+                                        // Firestore instance
+                                        FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+                                        // Data to be stored in Firestore
+                                        Map<String, Object> userData = new HashMap<>();
+                                        userData.put("userDiscord", "Some Value");
+                                        userData.put("userGmail", userGmail);
+                                        userData.put("userName", userName);
+
+                                        // Add document to "Users" collection
+                                        db.collection("Users")
+                                                .document(user.getUid())
+                                                .set(userData)
+                                                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                    @Override
+                                                    public void onSuccess(Void aVoid) {
+                                                        // Document written successfully
+                                                        redirectToMainActivity();
+                                                    }
+                                                })
+                                                .addOnFailureListener(new OnFailureListener() {
+                                                    @Override
+                                                    public void onFailure(@NonNull Exception e) {
+                                                        // Handle Firestore document write failure
+                                                        showToast("Firestore Error: " + e.getMessage());
+                                                    }
+                                                });
+                                    } else {
+                                        showToast("User not found after account creation.");
+                                    }
                                 } else {
-                                    showToast("Account creation failed.");
+                                    // Handle account creation failure
+                                    showToast("Account creation failed: " + task.getException().getMessage());
                                 }
                             }
                         });
