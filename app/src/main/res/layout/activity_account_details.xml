@@ -6,7 +6,9 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".accountDetails"
-    android:padding="16dp">
+    android:paddingLeft="20dp"
+    android:paddingRight="20dp"
+    android:paddingTop="40dp">
 
     <TextView
         android:id="@+id/textViewUsername"
@@ -68,5 +70,13 @@
         android:text="@string/save_changes"
         android:layout_below="@id/editTextNewPassword"
         android:layout_marginTop="24dp"/>
+
+    <Button
+        android:id="@+id/buttonBack"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/back"
+        android:layout_below="@id/buttonSaveChanges"
+        android:layout_marginTop="16dp"/>
 
 </RelativeLayout>

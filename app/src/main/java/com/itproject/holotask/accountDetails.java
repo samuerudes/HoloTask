@@ -38,6 +38,7 @@ public class accountDetails extends AppCompatActivity {
         editTextUserDiscord = findViewById(R.id.editTextUserDiscord);
         editTextNewPassword = findViewById(R.id.editTextNewPassword);
         buttonSaveChanges = findViewById(R.id.buttonSaveChanges);
+        Button buttonBack = findViewById(R.id.buttonBack);
 
         // Initialize Firebase components
         db = FirebaseFirestore.getInstance();
@@ -59,6 +60,15 @@ public class accountDetails extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 saveChanges();
+            }
+        });
+
+        buttonBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Navigate back to MainActivity
+                startActivity(new Intent(accountDetails.this, MainActivity.class));
+                finish(); // Close the current activity
             }
         });
     }
