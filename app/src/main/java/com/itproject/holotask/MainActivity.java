@@ -45,25 +45,10 @@ public class MainActivity extends AppCompatActivity implements TaskDeletionHandl
     private DrawerLayout drawerLayout;
     private ActionBarDrawerToggle drawerToggle;
     private NavigationView navigationView;
-    private Calendar mCalendarService;
     private GridView gridView;
     private CustomAdapter adapter;
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
     private List<String[]> data = new ArrayList<>();  // Declare and initialize data list
-
-    @Override
-    public void onTaskDeleted(String deletedTaskID) {
-        // Remove the deleted task from the data list
-        for (int i = 0; i < data.size(); i++) {
-            if (data.get(i)[0].equals(deletedTaskID)) {
-                data.remove(i);
-                break;
-            }
-        }
-
-        // Notify the adapter about the data change
-        adapter.notifyDataSetChanged();
-    }
 
 
     @Override
@@ -358,7 +343,6 @@ public class MainActivity extends AppCompatActivity implements TaskDeletionHandl
         startActivity(new Intent(MainActivity.this, login.class));
         finish(); // Close MainActivity after logout
     }
-
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle toolbar item clicks (e.g., menu icon)
@@ -366,6 +350,18 @@ public class MainActivity extends AppCompatActivity implements TaskDeletionHandl
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+    @Override
+    public void onTaskDeleted(String deletedTaskID) {
+        // Remove the deleted task from the data list
+        for (int i = 0; i < data.size(); i++) {
+            if (data.get(i)[0].equals(deletedTaskID)) {
+                data.remove(i);
+                break;
+            }
+        }
+        // Notify the adapter about the data change
+        adapter.notifyDataSetChanged();
     }
 
 }
