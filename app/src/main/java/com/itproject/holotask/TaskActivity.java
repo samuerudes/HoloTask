@@ -37,10 +37,7 @@ public class TaskActivity extends AppCompatActivity {
     TextView TaskName;
     TextView deadlineTextView;
     TextView descTextView;
-
     private SeekBar seekBar;
-
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,7 +70,8 @@ public class TaskActivity extends AppCompatActivity {
         String taskName = intent.getStringExtra("taskName");
         String deadline = intent.getStringExtra("deadline");
         String description = intent.getStringExtra("description");
-        String taskID = intent.getStringExtra("taskID"); // Assuming taskID is passed as an extra
+        String taskID = intent.getStringExtra("taskID");
+        String status = intent.getStringExtra("status");
 
         int seekbarProgress = sharedPref.getInt(taskID, 0);
         seekBar.setProgress(seekbarProgress);
@@ -106,24 +104,45 @@ public class TaskActivity extends AppCompatActivity {
         }
 
 // Get current time in milliseconds
-        long now = Calendar.getInstance().getTimeInMillis();
+        Calendar nowCalendar = Calendar.getInstance();
+        long now = nowCalendar.getTimeInMillis();
 
-// Calculate time remaining in milliseconds
-        long remaining = deadlinecalc.getTime() - now;
+// Adjust deadline to 12:00 AM of the following day
+        Calendar deadlineCalendar = Calendar.getInstance();
+        deadlineCalendar.setTime(deadlinecalc);
+        deadlineCalendar.set(Calendar.HOUR_OF_DAY, 0);
+        deadlineCalendar.set(Calendar.MINUTE, 0);
+        deadlineCalendar.set(Calendar.SECOND, 0);
+        deadlineCalendar.add(Calendar.DAY_OF_MONTH, 1); // Add one day to get to the end of the following day
 
-// Calculate days, hours, minutes from remaining milliseconds
-        int days = (int) (remaining / (1000 * 60 * 60 * 24));
+        long adjustedDeadline = deadlineCalendar.getTimeInMillis();
 
-// Calculate hours
-        int hours = (int) ((remaining % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        if (status != null && status.equals("Completed")) {
+            timeRemainTextView.setText("Completed");
+        } else {
+            // Calculate remaining or overdue time as before
+            if (now > adjustedDeadline) {
+                // Calculate overdue time
+                long overdue = now - adjustedDeadline;
+                int overdueDays = (int) (overdue / (1000 * 60 * 60 * 24));
+                int overdueHours = (int) ((overdue % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                int overdueMinutes = (int) ((overdue % (1000 * 60 * 60)) / (1000 * 60));
 
-// Calculate remaining minutes
-        int minutes = (int) ((remaining % (1000 * 60 * 60)) / (1000 * 60));
+                // Update timeRemain TextView with overdue message
+                String overdueMessage = "Overdue by: " + overdueDays + " days, " + overdueHours + " hours, " + overdueMinutes + " minutes";
+                timeRemainTextView.setText(overdueMessage);
+            } else {
+                // Calculate time remaining if not overdue
+                long remaining = adjustedDeadline - now;
+                int days = (int) (remaining / (1000 * 60 * 60 * 24));
+                int hours = (int) ((remaining % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                int minutes = (int) ((remaining % (1000 * 60 * 60)) / (1000 * 60));
 
-// Update timeRemain TextView with formatted string
-        String timeRemainingString = "Days: " + days + ", Hours: " + hours + ", Minutes: " + minutes;
-        timeRemainTextView.setText(timeRemainingString);
-
+                // Update timeRemain TextView with remaining time
+                String timeRemainingString = "Days: " + days + ", Hours: " + hours + ", Minutes: " + minutes;
+                timeRemainTextView.setText(timeRemainingString);
+            }
+        }
 
         // Edit Button Click Listener
         editButton.setOnClickListener(new View.OnClickListener() {
@@ -167,6 +186,7 @@ public class TaskActivity extends AppCompatActivity {
         String deadline = intent.getStringExtra("deadline");
         String description = intent.getStringExtra("description");
 
+
         // Create an AlertDialog builder
         AlertDialog.Builder builder = new AlertDialog.Builder(TaskActivity.this);
         builder.setTitle("Edit Task");
@@ -195,18 +215,20 @@ public class TaskActivity extends AppCompatActivity {
                 int month = myCalendar.get(Calendar.MONTH);
                 int day = myCalendar.get(Calendar.DAY_OF_MONTH);
 
-                DatePickerDialog datePickerDialog = new DatePickerDialog(TaskActivity.this,
+                        DatePickerDialog datePickerDialog = new DatePickerDialog(TaskActivity.this,
                         new DatePickerDialog.OnDateSetListener() {
-
                             @Override
                             public void onDateSet(DatePicker view, int selectedYear, int selectedMonth, int selectedDay) {
                                 myCalendar.set(Calendar.YEAR, selectedYear);
                                 myCalendar.set(Calendar.MONTH, selectedMonth);
-                                myCalendar.set(Calendar.DAY_OF_MONTH, selectedDay);
+                                myCalendar.set(Calendar.DAY_OF_MONTH, 1);
+                                // Set the time to 12:00 AM of the following day
+                                myCalendar.set(Calendar.HOUR_OF_DAY, 0);
+                                myCalendar.set(Calendar.MINUTE, 0);
+                                myCalendar.set(Calendar.SECOND, 0);
                                 String formattedDate = formatDate(myCalendar.getTime());  // Call method to format date
                                 deadlineInput.setText(formattedDate);
                             }
-
                         }, year, month, day);
                 datePickerDialog.show();
             }
@@ -233,7 +255,6 @@ public class TaskActivity extends AppCompatActivity {
 
                 Toast.makeText(TaskActivity.this, "Task edited successfully!", Toast.LENGTH_SHORT).show();
                 redirectToMainActivity();
-
             }
         });
 

@@ -64,6 +64,8 @@ public class MainActivity extends AppCompatActivity implements TaskDeletionHandl
         // Notify the adapter about the data change
         adapter.notifyDataSetChanged();
     }
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
