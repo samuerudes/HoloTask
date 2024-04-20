@@ -9,7 +9,7 @@
     android:fitsSystemWindows="true"
     tools:context=".MainActivity">
 
-    <!-- Main content layout -->
+    <!-- Main content layout with vertical orientation -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -25,16 +25,17 @@
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
                 android:background="?attr/colorPrimary"
-                app:title="Category of Tasks"
-                app:titleTextColor="@android:color/white"
+                app:title="HoloTask"
+                app:titleTextColor="@android:color/holo_purple"
                 app:popupTheme="@style/AppTheme.PopupOverlay" />
 
         </com.google.android.material.appbar.AppBarLayout>
 
-        <!-- Content Area -->
+        <!-- Content Area with dynamic GridView and fixed "Create Task" button -->
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
             android:orientation="vertical">
 
             <!-- TextView for category of tasks -->
@@ -47,23 +48,38 @@
                 android:textSize="30sp"
                 android:text="@string/category_of_tasks" />
 
-            <!-- GridView for displaying tasks -->
+            <!-- GridView for displaying tasks (expandable) -->
             <GridView
                 android:id="@+id/gridView"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="0dp"
+                android:layout_weight="1"
                 android:horizontalSpacing="10dp"
                 android:numColumns="2"
                 android:padding="10dp"
-                android:verticalSpacing="10dp" />
+                android:verticalSpacing="10dp"
+                android:scrollbars="none" /> <!-- Hide GridView's vertical scrollbar -->
 
-            <!-- Button to create a new task -->
+        </LinearLayout>
+
+        <!-- Fixed bottom layout for "Create Task" button -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@android:color/darker_gray" />
+
             <Button
                 android:id="@+id/button8"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:layout_marginTop="20dp"
+                android:layout_marginBottom="30dp"
                 android:text="@string/create_task" />
 
         </LinearLayout>
