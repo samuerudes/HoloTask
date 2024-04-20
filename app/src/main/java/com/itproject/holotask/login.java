@@ -135,7 +135,8 @@ public class login extends AppCompatActivity {
         // Initialize GoogleSignInOptions
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestIdToken(getString(R.string.default_web_client_id))
-                .requestEmail().build();
+                .requestEmail()
+                .build();
 
         mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
 
@@ -192,4 +193,3 @@ public class login extends AppCompatActivity {
     }
 }
 
-    // Method to redirect to the login activity
