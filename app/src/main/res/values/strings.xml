@@ -23,4 +23,8 @@
     <string name="new_password">New Password:</string>
     <string name="enter_new_password">Enter new password</string>
     <string name="save_changes">Save Changes</string>
+    <string name="task_name">Task Name</string>
+    <string name="due_date">Due Date</string>
+    <string name="description">Description</string>
+    <string name="add_to_google_calendar">Add to Google Calendar</string>
 </resources>
