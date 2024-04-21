@@ -32,6 +32,7 @@
 
         </com.google.android.material.appbar.AppBarLayout>
 
+
         <TextView
             android:id="@+id/darkOption"
             android:layout_width="wrap_content"

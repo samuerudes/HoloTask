@@ -18,6 +18,9 @@ import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.widget.CompoundButton;
 import android.widget.Switch;
+import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 public class appSettings extends AppCompatActivity {
 
@@ -26,12 +29,17 @@ public class appSettings extends AppCompatActivity {
     private Toolbar toolbar;
     private Button buttonLightMode;
     private Button buttonDarkMode;
+    private Switch notificationSwitch;
+    private SharedPreferences sharedPreferences;
+    private static final String SHARED_PREFS_KEY = "notification_enabled";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_app_settings);
 
-
+        notificationSwitch = findViewById(R.id.switchNotif);
+        sharedPreferences = getSharedPreferences(getPackageName() + "_preferences", Context.MODE_PRIVATE);
         buttonLightMode = findViewById(R.id.buttonLightMode);
         buttonDarkMode = findViewById(R.id.buttonDarkMode);
 
@@ -45,6 +53,21 @@ public class appSettings extends AppCompatActivity {
 
         // Setup navigation menu using existing navigationManager class
         navigationManager.setupNavigationMenu(this, drawerLayout, navigationView, toolbar);
+
+        notificationSwitch.setChecked(sharedPreferences.getBoolean(SHARED_PREFS_KEY, true));
+
+        notificationSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            // Save switch state in SharedPreferences
+            sharedPreferences.edit().putBoolean(SHARED_PREFS_KEY, isChecked).apply();
+
+            String message;
+            if (isChecked) {
+                message = "Notifications enabled!";
+            } else {
+                message = "Notifications disabled.";
+            }
+            Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
+        });
 
 // Set click listeners for buttons
         buttonLightMode.setOnClickListener(new View.OnClickListener() {
