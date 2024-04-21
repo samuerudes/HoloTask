@@ -43,7 +43,7 @@
                 android:id="@+id/textView5"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="35dp"
+                android:layout_marginTop="20dp"
                 android:layout_gravity="center_horizontal"
                 android:textSize="30sp"
                 android:text="@string/category_of_tasks" />
@@ -57,8 +57,7 @@
                 android:horizontalSpacing="10dp"
                 android:numColumns="2"
                 android:padding="10dp"
-                android:verticalSpacing="10dp"
-                android:scrollbars="none" /> <!-- Hide GridView's vertical scrollbar -->
+                android:verticalSpacing="10dp" />
 
         </LinearLayout>
 
