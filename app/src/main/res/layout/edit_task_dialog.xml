@@ -8,16 +8,17 @@
         android:id="@+id/editTaskName"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Task Name" />
+        android:hint="@string/task_name_edit" />
 
     <EditText
         android:id="@+id/editDeadline"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Due Date (tap to select)" />
+        android:hint="@string/due_date_tap_to_select" />
 
     <EditText
         android:id="@+id/editDescription"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Description" />  </LinearLayout>
+        android:hint="@string/description_edit" />
+</LinearLayout>

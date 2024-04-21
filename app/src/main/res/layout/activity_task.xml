@@ -22,7 +22,7 @@
         android:layout_marginTop="60dp"
         android:layout_marginStart="50dp"
         android:gravity="center"
-        android:text="Task Name"
+        android:text="@string/task_name_activity_task"
         android:textSize="30sp" />
 
     <View
@@ -39,7 +39,7 @@
         android:layout_marginTop="130dp"
         android:layout_marginStart="160dp"
         android:textSize="30sp"
-        android:text="Due By" />
+        android:text="@string/due_by" />
 
     <TextView
         android:id="@+id/textViewDueBy"
@@ -56,7 +56,7 @@
         android:layout_marginTop="185dp"
         android:textSize="30sp"
         android:gravity="center"
-        android:text="Date" />
+        android:text="@string/date" />
 
     <TextView
         android:id="@+id/duration"
@@ -65,7 +65,7 @@
         android:layout_marginTop="240dp"
         android:textSize="30sp"
         android:gravity="center"
-        android:text="Time Remaining" />
+        android:text="@string/time_remaining" />
 
     <TextView
         android:id="@+id/textViewDuration"
@@ -82,7 +82,7 @@
         android:layout_marginTop="295dp"
         android:textSize="20sp"
         android:gravity="center"
-        android:text="Time Remaining" />
+        android:text="@string/time_remaining_task" />
 
     <TextView
         android:id="@+id/descTaskBorder"
@@ -91,7 +91,7 @@
         android:layout_marginTop="350dp"
         android:textSize="30sp"
         android:gravity="center"
-        android:text="Description" />
+        android:text="@string/description_task" />
 
     <TextView
         android:id="@+id/textViewDesc"
@@ -113,7 +113,7 @@
             android:id="@+id/descTask"
             android:textSize="18sp"
             android:gravity="center"
-            android:text="description" />
+            android:text="@string/description_task2" />
 
     </ScrollView>
 
@@ -132,7 +132,7 @@
         android:layout_height="55dp"
         android:layout_marginTop="650dp"
         android:layout_marginStart="155dp"
-        android:text="Complete" />
+        android:text="@string/complete" />
 
     <Button
         android:id="@+id/editTaskButton"
@@ -140,7 +140,7 @@
         android:layout_height="55dp"
         android:layout_marginTop="650dp"
         android:layout_marginStart="50dp"
-        android:text="Edit" />
+        android:text="@string/edit" />
 
     <Button
         android:id="@+id/deleteTaskButton"
@@ -148,7 +148,7 @@
         android:layout_height="55dp"
         android:layout_marginTop="650dp"
         android:layout_marginStart="260dp"
-        android:text="Delete" />
+        android:text="@string/delete" />
 
     <Button
         android:id="@+id/backButton"
@@ -156,7 +156,7 @@
         android:layout_height="55dp"
         android:layout_marginTop="730dp"
         android:layout_marginStart="155dp"
-        android:text="BACK" />
+        android:text="@string/back_tasks" />
 
 
 

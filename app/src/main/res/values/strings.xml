@@ -34,4 +34,18 @@
     <string name="hello_user">Hello, User!</string>
     <string name="back">Back</string>
     <string name="create_task">Create Task</string>
+    <string name="task_name_activity_task">Task Name</string>
+    <string name="due_by">Due By</string>
+    <string name="date">Date</string>
+    <string name="time_remaining">Time Remaining</string>
+    <string name="time_remaining_task">Time Remaining</string>
+    <string name="description_task">Description</string>
+    <string name="description_task2">description</string>
+    <string name="complete">Complete</string>
+    <string name="edit">Edit</string>
+    <string name="delete">Delete</string>
+    <string name="back_tasks">BACK</string>
+    <string name="due_date_tap_to_select">Due Date (tap to select)</string>
+    <string name="task_name_edit">Task Name</string>
+    <string name="description_edit">Description</string>
 </resources>
