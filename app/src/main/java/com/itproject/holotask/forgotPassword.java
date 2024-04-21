@@ -1,5 +1,6 @@
 package com.itproject.holotask;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
@@ -18,6 +19,7 @@ public class forgotPassword extends AppCompatActivity {
 
     private EditText emailEditText;
     private Button resetButton;
+    private Button backButton;
     private FirebaseAuth mAuth;
 
     @Override
@@ -29,6 +31,7 @@ public class forgotPassword extends AppCompatActivity {
 
         emailEditText = findViewById(R.id.forgotPasswordEmail);
         resetButton = findViewById(R.id.resetPasswordButton);
+        backButton = findViewById(R.id.backButton);
 
         resetButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -53,5 +56,15 @@ public class forgotPassword extends AppCompatActivity {
                         });
             }
         });
+
+        backButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Navigate back to login activity
+                startActivity(new Intent(forgotPassword.this, login.class));
+                finish(); // Close the current activity
+            }
+        });
+
     }
 }
