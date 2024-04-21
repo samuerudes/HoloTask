@@ -28,4 +28,5 @@
     <color name="darkBackgroundColor">#0F0F0F</color>
     <color name="my_icon_color">#FFFFFF</color>
     <color name="red">#0F0F0F</color>
+    <color name="orange">#FFA500</color>color>
 </resources>
