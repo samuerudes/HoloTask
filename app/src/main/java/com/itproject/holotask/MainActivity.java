@@ -217,15 +217,21 @@ public class MainActivity extends AppCompatActivity implements TaskDeletionHandl
 
                             // Determine task status based on current date and deadline
                             String updatedStatus = calculateTaskStatus(status, deadline);
+                            String notificationKey = SHARED_PREFS_KEY + "_" + taskID; // Combine key with task ID
 
                             updatedData.add(new String[]{taskID, taskName, updatedStatus, deadline, description});
                             // Check for overdue tasks and send notifications
-                            if (updatedStatus.equals("Overdue") && notificationsEnabled) {
-                                sendOverdueNotification(taskName);
+                            if (!hasNotificationShown(notificationKey)) {
+                                if (updatedStatus.equals("Overdue") && notificationsEnabled) {
+                                    // Send overdue notification
+                                    sendOverdueNotification(taskName);
+                                    setNotificationShown(notificationKey, true); // Update flag after sending notification
+                                }
                             }
-
                         }
-                        // Sort tasks based on status and deadline
+
+
+                            // Sort tasks based on status and deadline
                         Collections.sort(updatedData, new Comparator<String[]>() {
                             @Override
                             public int compare(String[] task1, String[] task2) {
@@ -276,7 +282,13 @@ public class MainActivity extends AppCompatActivity implements TaskDeletionHandl
                     }
                 });
     }
+    private boolean hasNotificationShown(String notificationKey) {
+        return sharedPreferences.getBoolean(notificationKey, false);
+    }
 
+    private void setNotificationShown(String notificationKey, boolean shown) {
+        sharedPreferences.edit().putBoolean(notificationKey, shown).apply();
+    }
     private void sendOverdueNotification(String taskName) {
 
         if (sharedPreferences.getBoolean(SHARED_PREFS_KEY, true)) {
