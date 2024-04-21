@@ -225,24 +225,31 @@ public class register extends AppCompatActivity {
     }
 
     private void googleSignIn(){
-
-        Intent intent = mGoogleSignInClient.getSignInIntent();
-        startActivityForResult(intent,RC_SIGN_IN);
-
+        mGoogleSignInClient.signOut().addOnCompleteListener(this, new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                // Start sign-in process after signing out
+                Intent intent = mGoogleSignInClient.getSignInIntent();
+                startActivityForResult(intent, RC_SIGN_IN);
+            }
+        });
     }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data){
-        super.onActivityResult(requestCode,resultCode,data);
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
 
-        if (requestCode==RC_SIGN_IN){
+        if (requestCode == RC_SIGN_IN) {
             Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
 
-            try{
+            try {
                 GoogleSignInAccount account = task.getResult(ApiException.class);
-                firebaseAuth(account.getIdToken());
-            }
-            catch (Exception e){
+                if (account != null) {
+                    firebaseAuth(account.getIdToken());
+                } else {
+                    Toast.makeText(this, "Google Sign-In Failed", Toast.LENGTH_SHORT).show();
+                }
+            } catch (Exception e) {
                 Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
             }
         }
@@ -317,8 +324,6 @@ public class register extends AppCompatActivity {
                     }
                 });
     }
-
-
 
     private void showToast(String message) {
         Toast.makeText(register.this, message, Toast.LENGTH_SHORT).show();

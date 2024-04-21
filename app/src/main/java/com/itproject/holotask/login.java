@@ -83,6 +83,15 @@ public class login extends AppCompatActivity {
         // Create a SpannableString
         SpannableString spannableString = new SpannableString("New to HoloTask? Join now");
 
+        TextView forgotPasswordText = findViewById(R.id.forgotPasswordText);
+        forgotPasswordText.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Launch ForgotPasswordActivity
+                startActivity(new Intent(login.this, forgotPassword.class));
+            }
+        });
+
         // Create a ClickableSpan for "Join now"
         ClickableSpan clickableSpan = new ClickableSpan() {
             @Override
@@ -166,8 +175,14 @@ public class login extends AppCompatActivity {
     }
 
     private void googleSignIn() {
-        Intent signInIntent = mGoogleSignInClient.getSignInIntent();
-        startActivityForResult(signInIntent, RC_SIGN_IN);
+        mGoogleSignInClient.signOut().addOnCompleteListener(this, new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                // Start sign-in process after signing out
+                Intent signInIntent = mGoogleSignInClient.getSignInIntent();
+                startActivityForResult(signInIntent, RC_SIGN_IN);
+            }
+        });
     }
 
     @Override
@@ -176,13 +191,7 @@ public class login extends AppCompatActivity {
 
         if (requestCode == RC_SIGN_IN) {
             Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
-
-            try {
-                GoogleSignInAccount account = task.getResult(ApiException.class);
-                firebaseAuthWithGoogle(account.getIdToken());
-            } catch (ApiException e) {
-                Toast.makeText(this, "Google Sign-In Failed", Toast.LENGTH_SHORT).show();
-            }
+            handleGoogleSignInResult(task);
         }
     }
 
@@ -207,6 +216,17 @@ public class login extends AppCompatActivity {
     private void startMainActivity() {
         generalMethods.startMainActivity(login.this);
         finish();
+    }
+
+    private void handleGoogleSignInResult(Task<GoogleSignInAccount> completedTask) {
+        try {
+            GoogleSignInAccount account = completedTask.getResult(ApiException.class);
+            // Use the account.getIdToken() for Firebase authentication
+            firebaseAuthWithGoogle(account.getIdToken());
+        } catch (ApiException e) {
+            // Handle sign-in failure (e.g., Google Sign-In Failed)
+            Toast.makeText(this, "Google Sign-In Failed: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+        }
     }
 }
 

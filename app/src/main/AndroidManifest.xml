@@ -19,9 +19,13 @@
         android:theme="@style/AppTheme"
         tools:targetApi="31">
         <activity
+            android:name=".forgotPassword"
+            android:exported="false" />
+        <activity
             android:name=".friends"
             android:exported="false" />
-        <activity android:name=".login"
+        <activity
+            android:name=".login"
             android:exported="false" />
         <activity
             android:name=".appSettings"
