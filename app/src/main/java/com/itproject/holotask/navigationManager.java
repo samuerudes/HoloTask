@@ -44,6 +44,8 @@ public class navigationManager {
             navigateToActivity(activity, appSettings.class);
         } else if (itemId == R.id.nav_account_details) {
             navigateToActivity(activity, accountDetails.class);
+        } else if (itemId == R.id.nav_friends) {
+            navigateToActivity(activity, friends.class);
         } else if (itemId == R.id.nav_logout) {
             logoutUser(activity);
         }

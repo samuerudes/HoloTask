@@ -27,6 +27,7 @@ import androidx.core.app.NotificationManagerCompat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
+import android.preference.PreferenceManager;
 import android.provider.CalendarContract;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -71,6 +72,20 @@ public class MainActivity extends AppCompatActivity implements TaskDeletionHandl
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        // Get the current theme mode from shared preferences
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
+        boolean isDarkMode = sharedPref.getBoolean("theme_mode", false);
+
+        // Apply the theme based on the saved mode
+        if (isDarkMode) {
+            setTheme(R.style.AppTheme_Dark);
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+        } else {
+            setTheme(R.style.AppTheme);
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+        }
+
         setContentView(R.layout.activity_main);
 
         LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);

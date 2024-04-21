@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <style name="AppTheme_Dark" parent="Theme.MaterialComponents.DayNight.NoActionBar">
-        <item name="android:textColor">@android:color/white</item>
-        <item name="android:fontFamily">@font/opensans_regular</item>
-    </style>
-</resources>

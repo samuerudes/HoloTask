@@ -1,26 +1,19 @@
 package com.itproject.holotask;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.view.View;
 import android.widget.Button;
 import android.os.Bundle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
-import androidx.appcompat.widget.SwitchCompat;
 import androidx.appcompat.widget.Toolbar;
 import androidx.drawerlayout.widget.DrawerLayout;
 import com.google.android.material.navigation.NavigationView;
-
-import android.os.Handler;
 import android.preference.PreferenceManager;
-import android.widget.CompoundButton;
 import android.widget.Switch;
 import android.widget.Toast;
 
-import androidx.appcompat.app.AppCompatActivity;
 
 public class appSettings extends AppCompatActivity {
 
@@ -36,6 +29,21 @@ public class appSettings extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        sharedPreferences = getSharedPreferences(getPackageName() + "_preferences", Context.MODE_PRIVATE);
+
+        boolean isDarkMode = sharedPreferences.getBoolean("theme_mode", false);
+        if (isDarkMode) {
+            setTheme(R.style.AppTheme_Dark); // Apply dark theme style
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+        } else {
+            setTheme(R.style.AppTheme); // Apply light theme style
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+        }
+
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
+        SharedPreferences.Editor editor = sharedPref.edit();
+
         setContentView(R.layout.activity_app_settings);
 
         notificationSwitch = findViewById(R.id.switchNotif);
@@ -49,7 +57,6 @@ public class appSettings extends AppCompatActivity {
 
         drawerLayout = findViewById(R.id.drawer_layout);
         navigationView = findViewById(R.id.nav_view);
-
 
         // Setup navigation menu using existing navigationManager class
         navigationManager.setupNavigationMenu(this, drawerLayout, navigationView, toolbar);
@@ -69,25 +76,29 @@ public class appSettings extends AppCompatActivity {
             Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
         });
 
-// Set click listeners for buttons
+        // Set click listeners for buttons
         buttonLightMode.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 // Set light mode
+                editor.putBoolean("theme_mode", false); // Store theme preference (optional)
+                editor.apply();
+                setTheme(R.style.AppTheme); // Apply light theme style
                 AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
-
+                recreate();
             }
         });
         buttonDarkMode.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 // Set dark mode
+                editor.putBoolean("theme_mode", true); // Store theme preference (optional)
+                editor.apply();
+                setTheme(R.style.AppTheme_Dark); // Apply dark theme style
                 AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
-
+                recreate(); // Restart activity to apply changes
             }
         });
-
-
     }
 }
 
