@@ -46,13 +46,12 @@ public class appSettings extends AppCompatActivity {
         // Setup navigation menu using existing navigationManager class
         navigationManager.setupNavigationMenu(this, drawerLayout, navigationView, toolbar);
 
-// Set click listeners for buttons
+        // Set click listeners for buttons
         buttonLightMode.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 // Set light mode
                 AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
-
             }
         });
         buttonDarkMode.setOnClickListener(new View.OnClickListener() {
@@ -60,7 +59,6 @@ public class appSettings extends AppCompatActivity {
             public void onClick(View v) {
                 // Set dark mode
                 AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
-
             }
         });
 

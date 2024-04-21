@@ -57,8 +57,8 @@ import java.util.UUID;
 public class MainActivity extends AppCompatActivity implements TaskDeletionHandler.OnTaskDeletedListener {
 
     private DrawerLayout drawerLayout;
-    private ActionBarDrawerToggle drawerToggle;
     private NavigationView navigationView;
+    private Toolbar toolbar;
     private GridView gridView;
     private CustomAdapter adapter;
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
@@ -69,7 +69,7 @@ public class MainActivity extends AppCompatActivity implements TaskDeletionHandl
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Toolbar toolbar = findViewById(R.id.toolbar);
+        toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this, getString(R.string.default_notification_channel_id));
         drawerLayout = findViewById(R.id.drawer_layout);
@@ -90,43 +90,8 @@ public class MainActivity extends AppCompatActivity implements TaskDeletionHandl
             notificationManager.createNotificationChannel(channel);
         }
 
-
-        // Set up navigation menu using navigationManager
-        navigationManager.setupNavigationMenu(MainActivity.this, drawerLayout, navigationView, toolbar);
-
-        // Find the greetingTextView in the navigation header view
-        View headerView = navigationView.getHeaderView(0);
-        TextView greetingTextView = headerView.findViewById(R.id.greetingTextView);
-
-        // Retrieve the username from Firestore
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        if (user != null) {
-            FirebaseFirestore db = FirebaseFirestore.getInstance();
-            String userId = user.getUid();
-
-            db.collection("Users")
-                    .document(userId)
-                    .get()
-                    .addOnSuccessListener(documentSnapshot -> {
-                        if (documentSnapshot.exists()) {
-                            String username = documentSnapshot.getString("userName");
-                            greetingTextView.setText("Hello, " + username + "!");
-                        }
-                    })
-                    .addOnFailureListener(e -> {
-                        Log.e("MainActivity", "Error fetching username", e);
-                    });
-        }
-        // Set navigation item click listener
-        navigationView.setNavigationItemSelectedListener(item -> {
-            // Store the item in a final reference
-            final MenuItem menuItem = item;
-
-            // Handle navigation item clicks using navigationManager
-            navigationManager.handleNavigationItemClick(MainActivity.this, menuItem, drawerLayout);
-            drawerLayout.closeDrawers();
-            return true;
-        });
+        // Setup navigation menu using existing navigationManager class
+        navigationManager.setupNavigationMenu(this, drawerLayout, navigationView, toolbar);
 
         // Initialize GridView and Adapter
         gridView = findViewById(R.id.gridView);
@@ -393,14 +358,6 @@ public class MainActivity extends AppCompatActivity implements TaskDeletionHandl
         FirebaseAuth.getInstance().signOut();
         startActivity(new Intent(MainActivity.this, login.class));
         finish(); // Close MainActivity after logout
-    }
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle toolbar item clicks (e.g., menu icon)
-        if (drawerToggle.onOptionsItemSelected(item)) {
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
     }
     @Override
     public void onTaskDeleted(String deletedTaskID) {

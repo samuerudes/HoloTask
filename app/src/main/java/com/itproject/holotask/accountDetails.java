@@ -10,8 +10,12 @@ import android.widget.ImageView;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.drawerlayout.widget.DrawerLayout;
+
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
@@ -21,10 +25,11 @@ import com.google.firebase.firestore.QuerySnapshot;
 
 public class accountDetails extends AppCompatActivity {
 
+    private DrawerLayout drawerLayout;
+    private NavigationView navigationView;
+    private Toolbar toolbar;
     private EditText editTextUsername, editTextUserDiscord, editTextNewPassword;
-    private ImageView profileImageView;
     private Button buttonSaveChanges;
-
     private FirebaseFirestore db;
     private FirebaseUser currentUser;
 
@@ -32,6 +37,16 @@ public class accountDetails extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_account_details);
+
+        toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
+        drawerLayout = findViewById(R.id.drawer_layout);
+        navigationView = findViewById(R.id.nav_view);
+
+
+        // Setup navigation menu using existing navigationManager class
+        navigationManager.setupNavigationMenu(this, drawerLayout, navigationView, toolbar);
 
         // Initialize views
         editTextUsername = findViewById(R.id.editTextUsername);
