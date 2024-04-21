@@ -2,13 +2,19 @@ package com.itproject.holotask;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.util.Log;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.TextView;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.widget.Toolbar;
 import androidx.drawerlayout.widget.DrawerLayout;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 public class navigationManager {
 
@@ -25,6 +31,7 @@ public class navigationManager {
                 return true;
             }
         });
+        updateGreetingText(activity, navigationView.getHeaderView(0));
     }
 
     public static void handleNavigationItemClick(Activity activity, MenuItem item, DrawerLayout drawerLayout) {
@@ -53,6 +60,29 @@ public class navigationManager {
         FirebaseAuth.getInstance().signOut();
         activity.startActivity(new Intent(activity, login.class));
         activity.finish();
+    }
+
+    private static void updateGreetingText(Activity activity, View headerView) {
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user != null) {
+            FirebaseFirestore db = FirebaseFirestore.getInstance();
+            String userId = user.getUid();
+
+            db.collection("Users")
+                    .document(userId)
+                    .get()
+                    .addOnSuccessListener(documentSnapshot -> {
+                        if (documentSnapshot.exists()) {
+                            String username = documentSnapshot.getString("userName");
+                            TextView greetingTextView = headerView.findViewById(R.id.greetingTextView);
+                            greetingTextView.setText("Hello, " + username + "!");
+                        }
+                    })
+                    .addOnFailureListener(e -> {
+                        Log.e("NavigationManager", "Error fetching username", e);
+                        // Handle failure appropriately (e.g., show error message)
+                    });
+        }
     }
 }
 
