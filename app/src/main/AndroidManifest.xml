@@ -45,9 +45,6 @@
             android:name=".MainActivity"
             android:exported="true" />
         <activity
-            android:name=".navigation_menu"
-            android:exported="false" />
-        <activity
             android:name=".register"
             android:exported="true"
             android:theme="@style/Theme.Material3.Light.NoActionBar" />

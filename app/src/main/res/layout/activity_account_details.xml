@@ -1,82 +1,120 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.drawerlayout.widget.DrawerLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/main"
+    android:id="@+id/drawer_layout"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".accountDetails"
-    android:paddingLeft="20dp"
-    android:paddingRight="20dp"
-    android:paddingTop="40dp">
+    android:layout_height="match_parent">
 
-    <TextView
-        android:id="@+id/textViewUsername"
+    <!-- Include your main content layout here -->
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <!-- App Bar (Toolbar) -->
+        <com.google.android.material.appbar.AppBarLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <androidx.appcompat.widget.Toolbar
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                android:background="?attr/colorPrimary"
+                app:title="HoloTask"
+                app:titleTextColor="@android:color/holo_purple"
+                app:popupTheme="@style/AppTheme.PopupOverlay" />
+
+        </com.google.android.material.appbar.AppBarLayout>
+
+        <!-- Your content goes here -->
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:paddingTop="80dp"
+            android:paddingLeft="20dp"
+            android:paddingRight="20dp">
+            <TextView
+                android:id="@+id/textViewUsername"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/accountDetailsusername"
+                android:textSize="16sp"
+                android:layout_marginBottom="8dp"/>
+
+            <EditText
+                android:id="@+id/editTextUsername"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/textViewUsername"
+                android:inputType="text"
+                android:hint="@string/enter_username"
+                android:layout_marginBottom="16dp"/>
+
+            <TextView
+                android:id="@+id/textViewUserDiscord"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/user_discord"
+                android:textSize="16sp"
+                android:layout_below="@id/editTextUsername"
+                android:layout_marginBottom="8dp"/>
+
+            <EditText
+                android:id="@+id/editTextUserDiscord"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/textViewUserDiscord"
+                android:inputType="text"
+                android:hint="@string/enter_user_discord_id"
+                android:layout_marginBottom="16dp"/>
+
+            <TextView
+                android:id="@+id/textViewNewPassword"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/new_password"
+                android:textSize="16sp"
+                android:layout_below="@id/editTextUserDiscord"
+                android:layout_marginBottom="8dp"/>
+
+            <EditText
+                android:id="@+id/editTextNewPassword"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/textViewNewPassword"
+                android:inputType="textPassword"
+                android:hint="@string/enter_new_password"
+                android:layout_marginBottom="16dp"/>
+
+            <Button
+                android:id="@+id/buttonSaveChanges"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/save_changes"
+                android:layout_below="@id/editTextNewPassword"
+                android:layout_marginTop="24dp"/>
+
+            <Button
+                android:id="@+id/buttonBack"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/back"
+                android:layout_below="@id/buttonSaveChanges"
+                android:layout_marginTop="16dp"/>
+        </RelativeLayout>
+
+    </RelativeLayout>
+
+    <!-- NavigationView for the drawer -->
+    <com.google.android.material.navigation.NavigationView
+        android:id="@+id/nav_view"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/accountDetailsusername"
-        android:textSize="16sp"
-        android:layout_marginBottom="8dp"/>
+        android:layout_height="match_parent"
+        android:layout_gravity="start"
+        app:headerLayout="@layout/nav_header"
+        app:menu="@menu/nav_menu" />
 
-    <EditText
-        android:id="@+id/editTextUsername"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/textViewUsername"
-        android:inputType="text"
-        android:hint="@string/enter_username"
-        android:layout_marginBottom="16dp"/>
-
-    <TextView
-        android:id="@+id/textViewUserDiscord"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/user_discord"
-        android:textSize="16sp"
-        android:layout_below="@id/editTextUsername"
-        android:layout_marginBottom="8dp"/>
-
-    <EditText
-        android:id="@+id/editTextUserDiscord"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/textViewUserDiscord"
-        android:inputType="text"
-        android:hint="@string/enter_user_discord_id"
-        android:layout_marginBottom="16dp"/>
-
-    <TextView
-        android:id="@+id/textViewNewPassword"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/new_password"
-        android:textSize="16sp"
-        android:layout_below="@id/editTextUserDiscord"
-        android:layout_marginBottom="8dp"/>
-
-    <EditText
-        android:id="@+id/editTextNewPassword"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/textViewNewPassword"
-        android:inputType="textPassword"
-        android:hint="@string/enter_new_password"
-        android:layout_marginBottom="16dp"/>
-
-    <Button
-        android:id="@+id/buttonSaveChanges"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/save_changes"
-        android:layout_below="@id/editTextNewPassword"
-        android:layout_marginTop="24dp"/>
-
-    <Button
-        android:id="@+id/buttonBack"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/back"
-        android:layout_below="@id/buttonSaveChanges"
-        android:layout_marginTop="16dp"/>
-
-</RelativeLayout>
+</androidx.drawerlayout.widget.DrawerLayout>
