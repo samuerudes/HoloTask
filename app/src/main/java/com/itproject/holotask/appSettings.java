@@ -42,6 +42,9 @@ public class appSettings extends AppCompatActivity {
         drawerLayout = findViewById(R.id.drawer_layout);
         navigationView = findViewById(R.id.nav_view);
 
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
+        SharedPreferences.Editor editor = sharedPref.edit();
+
 
         // Setup navigation menu using existing navigationManager class
         navigationManager.setupNavigationMenu(this, drawerLayout, navigationView, toolbar);
@@ -50,15 +53,21 @@ public class appSettings extends AppCompatActivity {
         buttonLightMode.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // Set light mode
                 AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+                editor.putBoolean("theme_mode", false); // Store theme preference
+                editor.apply();
+                setTheme(R.style.AppTheme); // Apply light theme style
+                recreate(); // Restart activity to apply changes
             }
         });
         buttonDarkMode.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // Set dark mode
                 AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+                editor.putBoolean("theme_mode", true); // Store theme preference
+                editor.apply();
+                setTheme(R.style.AppTheme_Dark); // Apply dark theme style
+                recreate(); // Restart activity to apply changes
             }
         });
 
