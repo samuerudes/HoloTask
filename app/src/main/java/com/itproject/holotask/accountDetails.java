@@ -10,12 +10,8 @@ import android.widget.ImageView;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-import androidx.drawerlayout.widget.DrawerLayout;
-
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
-import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
@@ -24,10 +20,9 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
 
 public class accountDetails extends AppCompatActivity {
-    private DrawerLayout drawerLayout;
-    private NavigationView navigationView;
-    private Toolbar toolbar;
+
     private EditText editTextUsername, editTextUserDiscord, editTextNewPassword;
+    private ImageView profileImageView;
     private Button buttonSaveChanges;
 
     private FirebaseFirestore db;
@@ -37,15 +32,6 @@ public class accountDetails extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_account_details);
-
-        toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-
-        drawerLayout = findViewById(R.id.drawer_layout);
-        navigationView = findViewById(R.id.nav_view);
-
-        // Setup navigation menu using existing navigationManager class
-        navigationManager.setupNavigationMenu(this, drawerLayout, navigationView, toolbar);
 
         // Initialize views
         editTextUsername = findViewById(R.id.editTextUsername);
@@ -115,14 +101,6 @@ public class accountDetails extends AppCompatActivity {
         final String newDiscord = editTextUserDiscord.getText().toString().trim();
         final String newPassword = editTextNewPassword.getText().toString();
 
-        if (!TextUtils.isEmpty(newDiscord)) {
-            // Check Discord ID availability only if a new Discord ID is provided
-            checkDiscordAvailability(newUsername, newDiscord, newPassword);
-        } else {
-            // Update profile with new username and/or password only
-            updateUserProfile(newUsername, newDiscord, newPassword);
-        }
-
         if (!TextUtils.isEmpty(newUsername)) {
             // Check username availability only if new username is provided
             checkUsernameAvailability(newUsername, newDiscord, newPassword);
@@ -130,30 +108,6 @@ public class accountDetails extends AppCompatActivity {
             // Update profile with new Discord and/or password only
             updateUserProfile(newUsername, newDiscord, newPassword);
         }
-    }
-
-    private void checkDiscordAvailability(final String newUsername, final String newDiscord, final String newPassword) {
-        db.collection("Users")
-                .whereEqualTo("userDiscord", newDiscord)
-                .get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if (task.isSuccessful()) {
-                            if (task.getResult().isEmpty()) {
-                                updateUserProfile(newUsername, newDiscord, newPassword);
-                            } else {
-                                Toast.makeText(accountDetails.this,
-                                        "Discord ID already exists. Please choose another one.",
-                                        Toast.LENGTH_SHORT).show();
-                            }
-                        } else {
-                            Toast.makeText(accountDetails.this,
-                                    "Error checking Discord ID availability: " + task.getException().getMessage(),
-                                    Toast.LENGTH_SHORT).show();
-                        }
-                    }
-                });
     }
 
     private void checkUsernameAvailability(final String newUsername, final String newDiscord, final String newPassword) {

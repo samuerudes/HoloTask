@@ -1,13 +1,23 @@
 package com.itproject.holotask;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.ActivityCompat;
+import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
 
 import java.text.ParseException;
@@ -21,6 +31,7 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.GridView;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -51,6 +62,7 @@ public class MainActivity extends AppCompatActivity implements TaskDeletionHandl
     private List<String[]> data = new ArrayList<>();  // Declare and initialize data list
 
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -62,6 +74,7 @@ public class MainActivity extends AppCompatActivity implements TaskDeletionHandl
         drawerLayout = findViewById(R.id.drawer_layout);
         navigationView = findViewById(R.id.nav_view);
 
+
         // Set up navigation menu using navigationManager
         navigationManager.setupNavigationMenu(MainActivity.this, drawerLayout, navigationView, toolbar);
 
@@ -69,7 +82,7 @@ public class MainActivity extends AppCompatActivity implements TaskDeletionHandl
         View headerView = navigationView.getHeaderView(0);
         TextView greetingTextView = headerView.findViewById(R.id.greetingTextView);
 
-        // Retrieve the username from Firestore (replace with your actual logic to fetch username)
+        // Retrieve the username from Firestore
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         if (user != null) {
             FirebaseFirestore db = FirebaseFirestore.getInstance();
@@ -190,7 +203,6 @@ public class MainActivity extends AppCompatActivity implements TaskDeletionHandl
                     }
                 });
     }
-
     // Calculate task status based on deadline and current date
     private String calculateTaskStatus(String currentStatus, String deadline) {
         try {
@@ -219,6 +231,9 @@ public class MainActivity extends AppCompatActivity implements TaskDeletionHandl
             return currentStatus; // Return current status in case of error
         }
     }
+
+
+
 
     // Show dialog to create a new task
     private void showCreateTaskDialog() {
@@ -298,6 +313,7 @@ public class MainActivity extends AppCompatActivity implements TaskDeletionHandl
 
                     if (addToCalendar) {
                         addToCalendar(taskName, deadline);
+
                     }
                 })
                 .addOnFailureListener(e -> {
@@ -305,7 +321,6 @@ public class MainActivity extends AppCompatActivity implements TaskDeletionHandl
                     Toast.makeText(MainActivity.this, "Failed to create task!", Toast.LENGTH_SHORT).show();
                 });
     }
-
     // Add task to Google Calendar
     private void addToCalendar(String taskName, String deadline) {
         try {
