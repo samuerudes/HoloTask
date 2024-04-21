@@ -32,9 +32,11 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.HashMap;
@@ -111,16 +113,19 @@ public class register extends AppCompatActivity {
 
                 if (TextUtils.isEmpty(email)) {
                     showToast("Enter username");
+                    progressBar.setVisibility(View.GONE);
                     return;
                 }
 
                 if (TextUtils.isEmpty(password)) {
                     showToast("Enter password");
+                    progressBar.setVisibility(View.GONE);
                     return;
                 }
 
                 if (!password.equals(confirmPassword)) {
                     showToast("Passwords do not match");
+                    progressBar.setVisibility(View.GONE);
                     return;
                 }
 
@@ -130,7 +135,7 @@ public class register extends AppCompatActivity {
                             public void onComplete(@NonNull Task<AuthResult> task) {
                                 progressBar.setVisibility(View.GONE);
                                 if (task.isSuccessful()) {
-                                    showToast("Account created.");
+                                    showToast("Account created successfully.");
 
                                     // Firebase user after successful creation
                                     FirebaseUser user = mAuth.getCurrentUser();
@@ -172,7 +177,11 @@ public class register extends AppCompatActivity {
                                     }
                                 } else {
                                     // Handle account creation failure
-                                    showToast("Account creation failed: " + task.getException().getMessage());
+                                    if (task.getException() instanceof FirebaseAuthUserCollisionException) {
+                                        showToast("An account with this email already exists.");
+                                    } else {
+                                        showToast("Account creation failed: " + task.getException().getMessage());
+                                    }
                                 }
                             }
                         });
@@ -230,47 +239,68 @@ public class register extends AppCompatActivity {
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
                             FirebaseUser user = auth.getCurrentUser();
+                            if (user != null) {
+                                // Check if the user document already exists in Firestore
+                                FirebaseFirestore db = FirebaseFirestore.getInstance();
+                                db.collection("Users")
+                                        .document(user.getUid())
+                                        .get()
+                                        .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                                            @Override
+                                            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                                if (task.isSuccessful()) {
+                                                    DocumentSnapshot document = task.getResult();
+                                                    if (document != null && document.exists()) {
+                                                        // Document exists, do not overwrite
+                                                        redirectToMainActivity();
+                                                    } else {
+                                                        // Document doesn't exist, proceed with writing new data
+                                                        String userGmail = user.getEmail();
+                                                        String userName = userGmail.split("@")[0];
 
-                            // Capture user's email (userGmail)
-                            String userGmail = user.getEmail();
+                                                        // Create Firestore instance
+                                                        FirebaseFirestore db = FirebaseFirestore.getInstance();
 
-                            // Derive username (userName) from user's email
-                            String userName = userGmail.split("@")[0]; // Extract username before "@gmail.com"
+                                                        // Create a new document in "Users" collection with UID as document ID
+                                                        Map<String, Object> userData = new HashMap<>();
+                                                        userData.put("userDiscord", ""); // You can set any initial value
+                                                        userData.put("userGmail", userGmail);
+                                                        userData.put("userName", userName);
 
-                            // Create Firestore instance
-                            FirebaseFirestore db = FirebaseFirestore.getInstance();
-
-                            // Create a new document in "Users" collection with UID as document ID
-                            Map<String, Object> userData = new HashMap<>();
-                            userData.put("userDiscord", "Some Value"); // You can set any initial value
-                            userData.put("userGmail", userGmail);
-                            userData.put("userName", userName);
-
-                            // Add the document to Firestore
-                            db.collection("Users")
-                                    .document(user.getUid())
-                                    .set(userData)
-                                    .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                        @Override
-                                        public void onSuccess(Void aVoid) {
-                                            // Document has been successfully written
-                                            Intent intent = new Intent(register.this, MainActivity.class);
-                                            startActivity(intent);
-                                        }
-                                    })
-                                    .addOnFailureListener(new OnFailureListener() {
-                                        @Override
-                                        public void onFailure(@NonNull Exception e) {
-                                            // Handle any errors
-                                            Toast.makeText(register.this, "Firestore Error: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-                                        }
-                                    });
+                                                        // Add the document to Firestore
+                                                        db.collection("Users")
+                                                                .document(user.getUid())
+                                                                .set(userData)
+                                                                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                                    @Override
+                                                                    public void onSuccess(Void aVoid) {
+                                                                        // Document has been successfully written
+                                                                        redirectToMainActivity();
+                                                                    }
+                                                                })
+                                                                .addOnFailureListener(new OnFailureListener() {
+                                                                    @Override
+                                                                    public void onFailure(@NonNull Exception e) {
+                                                                        // Handle any errors
+                                                                        Toast.makeText(register.this, "Firestore Error: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                                                                    }
+                                                                });
+                                                    }
+                                                } else {
+                                                    // Handle Firestore read failure
+                                                    showToast("Firestore Error: " + task.getException().getMessage());
+                                                }
+                                            }
+                                        });
+                            }
                         } else {
+                            // Handle Google Sign-In failure
                             Toast.makeText(register.this, "Google Sign-In Failed", Toast.LENGTH_SHORT).show();
                         }
                     }
                 });
     }
+
 
 
     private void showToast(String message) {
