@@ -8,8 +8,10 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
+import androidx.core.content.ContextCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
-
+import android.Manifest;
+import androidx.core.app.ActivityCompat;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.NotificationChannel;
@@ -19,7 +21,8 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
-
+import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
@@ -61,8 +64,6 @@ public class MainActivity extends AppCompatActivity implements TaskDeletionHandl
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
     private List<String[]> data = new ArrayList<>();  // Declare and initialize data list
 
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -70,9 +71,24 @@ public class MainActivity extends AppCompatActivity implements TaskDeletionHandl
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
+        NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this, getString(R.string.default_notification_channel_id));
         drawerLayout = findViewById(R.id.drawer_layout);
         navigationView = findViewById(R.id.nav_view);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (checkSelfPermission(Manifest.permission.ACCESS_NOTIFICATION_POLICY) != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_NOTIFICATION_POLICY}, 100);
+            }
+        }
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            String channelId = getString(R.string.default_notification_channel_id);
+            String channelName = getString(R.string.default_notification_channel_name);
+            NotificationChannel channel = new NotificationChannel(channelId, channelName, NotificationManager.IMPORTANCE_DEFAULT);
+            channel.setDescription(getString(R.string.default_notification_channel_description));
+            NotificationManager notificationManager = getSystemService(NotificationManager.class);
+            notificationManager.createNotificationChannel(channel);
+        }
 
 
         // Set up navigation menu using navigationManager
@@ -320,6 +336,26 @@ public class MainActivity extends AppCompatActivity implements TaskDeletionHandl
                     Log.w("Firestore", "Error adding document", e);
                     Toast.makeText(MainActivity.this, "Failed to create task!", Toast.LENGTH_SHORT).show();
                 });
+
+        String notificationTitle = "New Task Created!";
+        String notificationBody = "You've created a new task: " + taskName;
+
+        NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this, getString(R.string.default_notification_channel_id))
+                .setSmallIcon(R.drawable.holotask)
+                .setContentTitle(notificationTitle)
+                .setContentText(notificationBody)
+                .setStyle(new NotificationCompat.BigTextStyle().bigText(notificationBody))
+                .setPriority(NotificationCompat.PRIORITY_DEFAULT);
+
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_NOTIFICATION_POLICY) == PackageManager.PERMISSION_GRANTED) {
+            NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
+            notificationManager.notify(1, notificationBuilder.build());
+        } else {
+            // Handle the case where permission is not granted
+            Toast.makeText(this, "Notification permission is required to show task creation notifications. Please enable it in app settings.", Toast.LENGTH_LONG).show();
+        }
+        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
+        notificationManager.notify(1, notificationBuilder.build()); // Notification ID: 1
     }
     // Add task to Google Calendar
     private void addToCalendar(String taskName, String deadline) {

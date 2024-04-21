@@ -53,7 +53,6 @@ public class appSettings extends AppCompatActivity {
                 // Set light mode
                 AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
 
-
             }
         });
         buttonDarkMode.setOnClickListener(new View.OnClickListener() {

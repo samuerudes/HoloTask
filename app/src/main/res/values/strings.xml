@@ -48,4 +48,8 @@
     <string name="due_date_tap_to_select">Due Date (tap to select)</string>
     <string name="task_name_edit">Task Name</string>
     <string name="description_edit">Description</string>
+    <string name="default_notification_channel_id">default_channel</string>
+    <string name="default_notification_channel_name">HoloTask Notifications</string>
+    <string name="default_notification_channel_description">Notifications for HoloTask app</string>
+    <string name="new_task_created">New Task Created!</string>
 </resources>
