@@ -12,7 +12,7 @@
         android:layout_height="wrap_content"
         android:textSize="18sp"
         android:layout_marginStart="5dp"
-        android:maxLines="1"  android:ellipsize="end"/>
+        android:maxLines="1"  android:ellipsize="end" />
 
     <TextView
         android:id="@+id/status_text"
@@ -20,7 +20,7 @@
         android:layout_height="wrap_content"
         android:textSize="15sp"
         android:layout_marginStart="5dp"
-        android:maxLines="1"  android:ellipsize="end"/>
+        android:maxLines="1"  android:ellipsize="end" />
 
     <TextView
         android:id="@+id/deadline_text"
@@ -28,7 +28,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="5dp"
         android:textSize="15sp"
-        android:maxLines="1"  android:ellipsize="end"/>
+        android:maxLines="1"  android:ellipsize="end" />
 
     <TextView
         android:id="@+id/description_text"

@@ -27,7 +27,8 @@
                 android:background="?attr/colorPrimary"
                 app:title="HoloTask"
                 app:titleTextColor="@android:color/white"
-                app:popupTheme="@style/AppTheme.PopupOverlay" />
+                app:popupTheme="@style/AppTheme.PopupOverlay"
+                android:theme="@style/MyCustomToolbarStyle"/>
 
         </com.google.android.material.appbar.AppBarLayout>
 

@@ -32,7 +32,7 @@ android {
 dependencies {
 
     implementation(libs.appcompat)
-    implementation (libs.material.v150alpha04)
+    implementation(libs.material)
     implementation(libs.activity)
     implementation(libs.constraintlayout)
     implementation(libs.firebase.auth)
@@ -41,6 +41,7 @@ dependencies {
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
     implementation("androidx.appcompat:appcompat:1.6.1")
+    implementation("com.google.android.material:material:1.11.0")
     implementation("androidx.constraintlayout:constraintlayout:2.1.4")
     implementation("com.google.firebase:firebase-auth:22.3.1")
     implementation ("com.google.android.gms:play-services-auth:21.0.0")
@@ -60,10 +61,10 @@ dependencies {
     implementation ("com.google.firebase:firebase-firestore")
     implementation (platform("com.google.firebase:firebase-bom:32.8.1"))
     implementation ("androidx.appcompat:appcompat:1.4.1")
+    implementation ("com.google.android.material:material:1.5.0")
     implementation ("androidx.navigation:navigation-fragment-ktx:2.4.0")
     implementation ("androidx.navigation:navigation-ui-ktx:2.4.0")
     implementation ("com.google.firebase:firebase-messaging:23.0.6")
-    implementation ("com.google.android.material:material:1.5.0")
 }
 
 

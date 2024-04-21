@@ -1,6 +1,7 @@
 package com.itproject.holotask;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
@@ -9,6 +10,7 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 import androidx.core.content.ContextCompat;
+import androidx.core.content.res.ResourcesCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import android.Manifest;
 import androidx.core.app.ActivityCompat;
@@ -20,6 +22,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
 import androidx.core.app.NotificationCompat;
@@ -69,11 +72,9 @@ public class MainActivity extends AppCompatActivity implements TaskDeletionHandl
     private static final String SHARED_PREFS_KEY = "notification_enabled";
     private SharedPreferences sharedPreferences;
     private Switch notificationSwitch;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         // Get the current theme mode from shared preferences
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
         boolean isDarkMode = sharedPref.getBoolean("theme_mode", false);
@@ -112,13 +113,16 @@ public class MainActivity extends AppCompatActivity implements TaskDeletionHandl
         drawerLayout = findViewById(R.id.drawer_layout);
         navigationView = findViewById(R.id.nav_view);
         sharedPreferences = getSharedPreferences(getPackageName() + "_preferences", Context.MODE_PRIVATE);
-
         notificationSwitch = appSettingsView.findViewById(R.id.switchNotif); // Find switch within inflated view
         notificationSwitch.setChecked(sharedPreferences.getBoolean(SHARED_PREFS_KEY, true)); // Set switch state based on saved preference
+
+        toolbar.setNavigationIcon(R.drawable.baseline_arrow_back_ios_24);
 
         notificationSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
             sharedPreferences.edit().putBoolean(SHARED_PREFS_KEY, isChecked).apply();
         });
+
+
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             if (checkSelfPermission(Manifest.permission.ACCESS_NOTIFICATION_POLICY) != PackageManager.PERMISSION_GRANTED) {
@@ -340,10 +344,12 @@ public class MainActivity extends AppCompatActivity implements TaskDeletionHandl
         View dialogView = inflater.inflate(R.layout.dialog_create_task, null);
         builder.setView(dialogView);
 
+
         EditText taskNameInput = dialogView.findViewById(R.id.taskNameInput);
         EditText deadlineInput = dialogView.findViewById(R.id.deadlineInput);
         EditText descriptionInput = dialogView.findViewById(R.id.descriptionInput);
         CheckBox addToCalendarCheckbox = dialogView.findViewById(R.id.addToCalendarCheckbox);
+
 
         deadlineInput.setOnClickListener(v -> showDatePicker(deadlineInput));
 
