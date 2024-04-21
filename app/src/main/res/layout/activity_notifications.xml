@@ -23,7 +23,7 @@
                 android:layout_height="?attr/actionBarSize"
                 android:background="?attr/colorPrimary"
                 app:title="HoloTask"
-                app:titleTextColor="@android:color/holo_purple"
+                app:titleTextColor="@android:color/whitee"
                 app:popupTheme="@style/AppTheme.PopupOverlay" />
 
         </com.google.android.material.appbar.AppBarLayout>
