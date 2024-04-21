@@ -115,6 +115,14 @@ public class accountDetails extends AppCompatActivity {
         final String newDiscord = editTextUserDiscord.getText().toString().trim();
         final String newPassword = editTextNewPassword.getText().toString();
 
+        if (!TextUtils.isEmpty(newDiscord)) {
+            // Check Discord ID availability only if a new Discord ID is provided
+            checkDiscordAvailability(newUsername, newDiscord, newPassword);
+        } else {
+            // Update profile with new username and/or password only
+            updateUserProfile(newUsername, newDiscord, newPassword);
+        }
+
         if (!TextUtils.isEmpty(newUsername)) {
             // Check username availability only if new username is provided
             checkUsernameAvailability(newUsername, newDiscord, newPassword);
@@ -122,6 +130,30 @@ public class accountDetails extends AppCompatActivity {
             // Update profile with new Discord and/or password only
             updateUserProfile(newUsername, newDiscord, newPassword);
         }
+    }
+
+    private void checkDiscordAvailability(final String newUsername, final String newDiscord, final String newPassword) {
+        db.collection("Users")
+                .whereEqualTo("userDiscord", newDiscord)
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            if (task.getResult().isEmpty()) {
+                                updateUserProfile(newUsername, newDiscord, newPassword);
+                            } else {
+                                Toast.makeText(accountDetails.this,
+                                        "Discord ID already exists. Please choose another one.",
+                                        Toast.LENGTH_SHORT).show();
+                            }
+                        } else {
+                            Toast.makeText(accountDetails.this,
+                                    "Error checking Discord ID availability: " + task.getException().getMessage(),
+                                    Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
     }
 
     private void checkUsernameAvailability(final String newUsername, final String newDiscord, final String newPassword) {
