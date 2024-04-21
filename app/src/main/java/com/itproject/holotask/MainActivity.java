@@ -18,6 +18,7 @@ import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
@@ -63,17 +64,31 @@ public class MainActivity extends AppCompatActivity implements TaskDeletionHandl
     private CustomAdapter adapter;
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
     private List<String[]> data = new ArrayList<>();  // Declare and initialize data list
+    private static final String SHARED_PREFS_KEY = "notification_enabled";
+    private SharedPreferences sharedPreferences;
+    private Switch notificationSwitch;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View appSettingsView = inflater.inflate(R.layout.activity_app_settings, null); // Replace with your appSettings layout resource ID
+
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this, getString(R.string.default_notification_channel_id));
         drawerLayout = findViewById(R.id.drawer_layout);
         navigationView = findViewById(R.id.nav_view);
+        sharedPreferences = getSharedPreferences(getPackageName() + "_preferences", Context.MODE_PRIVATE);
+
+        notificationSwitch = appSettingsView.findViewById(R.id.switchNotif); // Find switch within inflated view
+        notificationSwitch.setChecked(sharedPreferences.getBoolean(SHARED_PREFS_KEY, true)); // Set switch state based on saved preference
+
+        notificationSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            sharedPreferences.edit().putBoolean(SHARED_PREFS_KEY, isChecked).apply();
+        });
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             if (checkSelfPermission(Manifest.permission.ACCESS_NOTIFICATION_POLICY) != PackageManager.PERMISSION_GRANTED) {
@@ -152,6 +167,7 @@ public class MainActivity extends AppCompatActivity implements TaskDeletionHandl
         }
 
         String userId = user.getUid();
+        boolean notificationsEnabled = sharedPreferences.getBoolean(SHARED_PREFS_KEY, true); // Retrieve notification state
         db.collection("UserTasks")
                 .whereEqualTo("userId", userId)
                 .get()
@@ -169,6 +185,11 @@ public class MainActivity extends AppCompatActivity implements TaskDeletionHandl
                             String updatedStatus = calculateTaskStatus(status, deadline);
 
                             updatedData.add(new String[]{taskID, taskName, updatedStatus, deadline, description});
+                            // Check for overdue tasks and send notifications
+                            if (updatedStatus.equals("Overdue") && notificationsEnabled) {
+                                sendOverdueNotification(taskName);
+                            }
+
                         }
                         // Sort tasks based on status and deadline
                         Collections.sort(updatedData, new Comparator<String[]>() {
@@ -196,6 +217,7 @@ public class MainActivity extends AppCompatActivity implements TaskDeletionHandl
                                     }
                                 }
 
+
                                 // If statuses are the same, compare by deadline
                                 SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
                                 try {
@@ -207,6 +229,7 @@ public class MainActivity extends AppCompatActivity implements TaskDeletionHandl
                                 }
                                 return 0;
                             }
+
                         });
 
                         // Update data and set adapter for the GridView
@@ -219,6 +242,33 @@ public class MainActivity extends AppCompatActivity implements TaskDeletionHandl
                     }
                 });
     }
+
+    private void sendOverdueNotification(String taskName) {
+
+        if (sharedPreferences.getBoolean(SHARED_PREFS_KEY, true)) {
+            String notificationTitle = "Overdue Task!";
+            String notificationBody = taskName + " is overdue!";
+
+            NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this, getString(R.string.default_notification_channel_id))
+                    .setSmallIcon(R.drawable.ic_android_black) // Replace with your notification icon
+                    .setContentTitle(notificationTitle)
+                    .setContentText(notificationBody)
+                    .setStyle(new NotificationCompat.BigTextStyle().bigText(notificationBody))
+                    .setPriority(NotificationCompat.PRIORITY_DEFAULT);
+
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_NOTIFICATION_POLICY) == PackageManager.PERMISSION_GRANTED) {
+                NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
+                notificationManager.notify(taskName.hashCode(), notificationBuilder.build()); // Use task name hash for unique ID
+            } else {
+                // Handle the case where permission is not granted
+                Toast.makeText(this, "Notification permission is required to show overdue task notifications. Please enable it in app settings.", Toast.LENGTH_LONG).show();
+            }
+        } else {
+            // Toast message indicating notifications are disabled
+            Toast.makeText(this, "Notifications are currently disabled in app settings.", Toast.LENGTH_SHORT).show();
+        }
+    }
+
     // Calculate task status based on deadline and current date
     private String calculateTaskStatus(String currentStatus, String deadline) {
         try {
@@ -339,9 +389,9 @@ public class MainActivity extends AppCompatActivity implements TaskDeletionHandl
 
         String notificationTitle = "New Task Created!";
         String notificationBody = "You've created a new task: " + taskName;
-
+        if (sharedPreferences.getBoolean(SHARED_PREFS_KEY, true)) {
         NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this, getString(R.string.default_notification_channel_id))
-                .setSmallIcon(R.drawable.holotask)
+                .setSmallIcon(R.drawable.ic_android_black)
                 .setContentTitle(notificationTitle)
                 .setContentText(notificationBody)
                 .setStyle(new NotificationCompat.BigTextStyle().bigText(notificationBody))
@@ -356,7 +406,11 @@ public class MainActivity extends AppCompatActivity implements TaskDeletionHandl
         }
         NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
         notificationManager.notify(1, notificationBuilder.build()); // Notification ID: 1
+    } else {
+            Toast.makeText(this, "Notifications are currently disabled in app settings.", Toast.LENGTH_SHORT).show();
+        }
     }
+
     // Add task to Google Calendar
     private void addToCalendar(String taskName, String deadline) {
         try {
@@ -387,6 +441,7 @@ public class MainActivity extends AppCompatActivity implements TaskDeletionHandl
         intent.putExtra("description", taskData[4]);
         startActivity(intent);
     }
+
     private void logoutUser() {
         // Implement your logout logic here
         // For example:
@@ -414,6 +469,7 @@ public class MainActivity extends AppCompatActivity implements TaskDeletionHandl
         // Notify the adapter about the data change
         adapter.notifyDataSetChanged();
     }
+
 
 }
 

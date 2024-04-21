@@ -36,9 +36,9 @@
             android:id="@+id/darkOption"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="130dp"
+            android:layout_marginStart="110dp"
             android:layout_marginTop="100dp"
-            android:text="Dark Mode"
+            android:text="Theme Modes"
             android:textSize="30sp" />
 
         <Button
@@ -57,6 +57,24 @@
             android:layout_marginStart="220dp"
             android:layout_marginTop="160dp"
             android:text="Dark Mode"
+            />
+
+        <TextView
+            android:id="@+id/notifOption"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="130dp"
+            android:layout_marginTop="270dp"
+            android:text="Notifications"
+            android:textSize="30sp" />
+
+        <Switch
+            android:id="@+id/switchNotif"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="185dp"
+            android:layout_marginTop="330dp"
+            android:text=""
             />
 
         <!-- Your content goes here -->
