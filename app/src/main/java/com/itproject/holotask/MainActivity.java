@@ -36,6 +36,7 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.GridView;
+import android.widget.LinearLayout;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -86,10 +87,24 @@ public class MainActivity extends AppCompatActivity implements TaskDeletionHandl
             AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
         }
 
+
         setContentView(R.layout.activity_main);
 
-        LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View appSettingsView = inflater.inflate(R.layout.activity_app_settings, null); // Replace with your appSettings layout resource ID
+        LayoutInflater inflater = LayoutInflater.from(this);
+        View itemView = inflater.inflate(R.layout.grid_item, null);
+
+        LinearLayout taskLayout = itemView.findViewById(R.id.taskLayout);
+
+
+    // Set the background color based on the theme mode
+        if (isDarkMode) {
+            taskLayout.setBackgroundColor(ContextCompat.getColor(this, R.color.darkBackgroundColor));
+        } else {
+            taskLayout.setBackgroundColor(ContextCompat.getColor(this, R.color.lightBackgroundColor));
+        }
+
+        LayoutInflater inflater2 = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View appSettingsView = inflater2.inflate(R.layout.activity_app_settings, null); // Replace with your appSettings layout resource ID
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);

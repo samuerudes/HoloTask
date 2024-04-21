@@ -23,4 +23,7 @@
 
     <color name="dark_status_bar_color">#121212</color>
     <color name="dark_navigation_bar_color">#212121</color>
+
+    <color name="lightBackgroundColor">#F0F0F0</color>
+    <color name="darkBackgroundColor">#0F0F0F</color>
 </resources>

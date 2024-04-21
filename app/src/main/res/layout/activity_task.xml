@@ -141,7 +141,7 @@
         android:layout_height="55dp"
         android:layout_marginTop="670dp"
         android:layout_alignParentLeft="true"
-        android:layout_marginLeft="20dp"
+        android:layout_marginLeft="18dp"
         android:text="@string/edit" />
 
     <Button
@@ -150,7 +150,7 @@
         android:layout_height="55dp"
         android:layout_marginTop="670dp"
         android:layout_alignParentRight="true"
-        android:layout_marginRight="20dp"
+        android:layout_marginRight="18dp"
         android:text="@string/delete" />
 
     <Button
