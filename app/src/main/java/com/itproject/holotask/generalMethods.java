@@ -2,7 +2,6 @@ package com.itproject.holotask;
 
 import android.content.Context;
 import android.content.Intent;
-
 import androidx.appcompat.app.AppCompatActivity;
 
 public class generalMethods {
@@ -11,7 +10,6 @@ public class generalMethods {
     public static Intent redirectToMainActivity(Context context) {
         // Create an Intent to start the MainActivity
         Intent intent = new Intent(context, MainActivity.class);
-
         // Add flags to clear the previous activities from the stack
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
 

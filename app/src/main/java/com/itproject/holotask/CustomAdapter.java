@@ -7,7 +7,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
-
 import java.util.List;
 
 public class CustomAdapter extends BaseAdapter {
@@ -18,11 +17,6 @@ public class CustomAdapter extends BaseAdapter {
     public CustomAdapter(Context context, List<String[]> data) {
         this.context = context;
         this.data = data;
-    }
-
-    public void setData(List<String[]> data) {
-        this.data = data;
-        notifyDataSetChanged();
     }
 
     @Override
@@ -73,7 +67,6 @@ public class CustomAdapter extends BaseAdapter {
             statusText.setTextColor(Color.BLACK);
         }
 
-        // Optionally, make status text bold
         statusText.setPaintFlags(statusText.getPaintFlags() | android.graphics.Paint.FAKE_BOLD_TEXT_FLAG);
 
         return convertView;

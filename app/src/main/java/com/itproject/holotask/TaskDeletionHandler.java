@@ -1,13 +1,11 @@
 package com.itproject.holotask;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.util.Log;
 import android.widget.Toast;
-
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
@@ -19,7 +17,7 @@ public class TaskDeletionHandler {
         builder.setTitle("Confirm Delete");
         builder.setMessage("Are you sure you want to delete this task?");
 
-        // Add positive and negative buttons
+        // Positive and negative buttons
         builder.setPositiveButton("Delete", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {

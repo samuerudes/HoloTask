@@ -12,7 +12,6 @@ import android.text.style.ClickableSpan;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -22,7 +21,6 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 
-import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
@@ -55,8 +53,6 @@ public class register extends AppCompatActivity {
     Button buttonRegister;
     FirebaseAuth mAuth;
     ProgressBar progressBar;
-
-    private static final String TAG = "RegisterActivity";
 
     @Override
     public void onStart() {
@@ -162,16 +158,15 @@ public class register extends AppCompatActivity {
                                         String userGmail = user.getEmail();
                                         String userName = userGmail.split("@")[0];
 
-                                        // Firestore instance
                                         FirebaseFirestore db = FirebaseFirestore.getInstance();
 
                                         // Data to be stored in Firestore
                                         Map<String, Object> userData = new HashMap<>();
-                                        userData.put("userDiscord", "Some Value");
+                                        userData.put("userDiscord", "");
                                         userData.put("userGmail", userGmail);
                                         userData.put("userName", userName);
 
-                                        // Add document to "Users" collection
+                                        // Add document to Users collection
                                         db.collection("Users")
                                                 .document(user.getUid())
                                                 .set(userData)
@@ -282,7 +277,6 @@ public class register extends AppCompatActivity {
                                                         String userGmail = user.getEmail();
                                                         String userName = userGmail.split("@")[0];
 
-                                                        // Create Firestore instance
                                                         FirebaseFirestore db = FirebaseFirestore.getInstance();
 
                                                         // Create a new document in "Users" collection with UID as document ID

@@ -4,11 +4,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
-
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.text.SpannableString;
@@ -19,12 +16,9 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.method.LinkMovementMethod;
-import android.text.style.ClickableSpan;
 import android.widget.Toast;
-
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
@@ -32,7 +26,6 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
-import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
@@ -51,7 +44,7 @@ public class login extends AppCompatActivity {
     @Override
     public void onStart() {
         super.onStart();
-        // Check if user is signed in (non-null) and update UI accordingly.
+        // Check if user is signed in (non-null) and update UI
         FirebaseUser currentUser = mAuth.getCurrentUser();
         if (currentUser != null) {
             startMainActivity();
@@ -76,14 +69,12 @@ public class login extends AppCompatActivity {
         }
 
         setContentView(R.layout.activity_login);
-
         // Find the TextView in your layout
         TextView textView = findViewById(R.id.newToHoloTask);
-
+        TextView forgotPasswordText = findViewById(R.id.forgotPasswordText);
         // Create a SpannableString
         SpannableString spannableString = new SpannableString("New to HoloTask? Join now");
 
-        TextView forgotPasswordText = findViewById(R.id.forgotPasswordText);
         forgotPasswordText.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -104,10 +95,8 @@ public class login extends AppCompatActivity {
 
         // Set the ClickableSpan for "Join now" in the SpannableString
         spannableString.setSpan(clickableSpan, spannableString.length() - "Join now".length(), spannableString.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-
         // Set the SpannableString to the TextView
         textView.setText(spannableString);
-
         // Make the TextView clickable and handle links
         textView.setMovementMethod(LinkMovementMethod.getInstance());
 
@@ -116,6 +105,8 @@ public class login extends AppCompatActivity {
         editTextPassword = findViewById(R.id.password);
         buttonLogin = findViewById(R.id.SignIn);
         progressBar = findViewById(R.id.progressbar);
+        googleAuth = findViewById(R.id.btnSignInWithGoogle);
+        mAuth = FirebaseAuth.getInstance();
 
         buttonLogin.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -153,10 +144,6 @@ public class login extends AppCompatActivity {
                         });
             }
         });
-
-        googleAuth = findViewById(R.id.btnSignInWithGoogle);
-
-        mAuth = FirebaseAuth.getInstance();
 
         // Initialize GoogleSignInOptions
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
@@ -204,7 +191,6 @@ public class login extends AppCompatActivity {
                         if (task.isSuccessful()) {
                             FirebaseUser user = mAuth.getCurrentUser();
 
-                            // Your existing code to update UI or store user information
                             startMainActivity();
                         } else {
                             Toast.makeText(login.this, "Authentication Failed.", Toast.LENGTH_SHORT).show();
@@ -224,7 +210,7 @@ public class login extends AppCompatActivity {
             // Use the account.getIdToken() for Firebase authentication
             firebaseAuthWithGoogle(account.getIdToken());
         } catch (ApiException e) {
-            // Handle sign-in failure (e.g., Google Sign-In Failed)
+            // Handle sign-in failure
             Toast.makeText(this, "Google Sign-In Failed: " + e.getMessage(), Toast.LENGTH_SHORT).show();
         }
     }

@@ -1,7 +1,5 @@
 package com.itproject.holotask;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
@@ -10,10 +8,8 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 import androidx.core.content.ContextCompat;
-import androidx.core.content.res.ResourcesCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import android.Manifest;
-import androidx.core.app.ActivityCompat;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.NotificationChannel;
@@ -22,14 +18,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
-import androidx.core.app.NotificationCompat;
-import androidx.core.app.NotificationManagerCompat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-
 import android.preference.PreferenceManager;
 import android.provider.CalendarContract;
 import android.util.Log;
@@ -43,14 +35,12 @@ import android.widget.LinearLayout;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import android.view.MenuItem;
-
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
@@ -88,14 +78,10 @@ public class MainActivity extends AppCompatActivity implements TaskDeletionHandl
             AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
         }
 
-
         setContentView(R.layout.activity_main);
-
         LayoutInflater inflater = LayoutInflater.from(this);
         View itemView = inflater.inflate(R.layout.grid_item, null);
-
         LinearLayout taskLayout = itemView.findViewById(R.id.taskLayout);
-
 
     // Set the background color based on the theme mode
         if (isDarkMode) {
@@ -105,24 +91,24 @@ public class MainActivity extends AppCompatActivity implements TaskDeletionHandl
         }
 
         LayoutInflater inflater2 = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View appSettingsView = inflater2.inflate(R.layout.activity_app_settings, null); // Replace with your appSettings layout resource ID
+        View appSettingsView = inflater2.inflate(R.layout.activity_app_settings, null);
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this, getString(R.string.default_notification_channel_id));
         drawerLayout = findViewById(R.id.drawer_layout);
         navigationView = findViewById(R.id.nav_view);
         sharedPreferences = getSharedPreferences(getPackageName() + "_preferences", Context.MODE_PRIVATE);
-        notificationSwitch = appSettingsView.findViewById(R.id.switchNotif); // Find switch within inflated view
+        notificationSwitch = appSettingsView.findViewById(R.id.switchNotif);
         notificationSwitch.setChecked(sharedPreferences.getBoolean(SHARED_PREFS_KEY, true)); // Set switch state based on saved preference
+        View headerView = navigationView.getHeaderView(0);
+        TextView greetingTextView = headerView.findViewById(R.id.greetingTextView);
+        gridView = findViewById(R.id.gridView);
 
         toolbar.setNavigationIcon(R.drawable.baseline_arrow_back_ios_24);
 
         notificationSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
             sharedPreferences.edit().putBoolean(SHARED_PREFS_KEY, isChecked).apply();
         });
-
-
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             if (checkSelfPermission(Manifest.permission.ACCESS_NOTIFICATION_POLICY) != PackageManager.PERMISSION_GRANTED) {
@@ -139,13 +125,8 @@ public class MainActivity extends AppCompatActivity implements TaskDeletionHandl
             notificationManager.createNotificationChannel(channel);
         }
 
-
         // Set up navigation menu using navigationManager
         navigationManager.setupNavigationMenu(MainActivity.this, drawerLayout, navigationView, toolbar);
-
-        // Find the greetingTextView in the navigation header view
-        View headerView = navigationView.getHeaderView(0);
-        TextView greetingTextView = headerView.findViewById(R.id.greetingTextView);
 
         // Retrieve the username from Firestore
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
@@ -166,6 +147,7 @@ public class MainActivity extends AppCompatActivity implements TaskDeletionHandl
                         Log.e("MainActivity", "Error fetching username", e);
                     });
         }
+
         // Set navigation item click listener
         navigationView.setNavigationItemSelectedListener(item -> {
             // Store the item in a final reference
@@ -176,9 +158,6 @@ public class MainActivity extends AppCompatActivity implements TaskDeletionHandl
             drawerLayout.closeDrawers();
             return true;
         });
-
-        // Initialize GridView and Adapter
-        gridView = findViewById(R.id.gridView);
 
         // Fetch tasks from Firestore and populate the GridView
         retrieveTasksFromFirestore();
@@ -231,7 +210,7 @@ public class MainActivity extends AppCompatActivity implements TaskDeletionHandl
                         }
 
 
-                            // Sort tasks based on status and deadline
+                        // Sort tasks based on status and deadline
                         Collections.sort(updatedData, new Comparator<String[]>() {
                             @Override
                             public int compare(String[] task1, String[] task2) {
@@ -257,7 +236,6 @@ public class MainActivity extends AppCompatActivity implements TaskDeletionHandl
                                     }
                                 }
 
-
                                 // If statuses are the same, compare by deadline
                                 SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
                                 try {
@@ -269,7 +247,6 @@ public class MainActivity extends AppCompatActivity implements TaskDeletionHandl
                                 }
                                 return 0;
                             }
-
                         });
 
                         // Update data and set adapter for the GridView
@@ -292,11 +269,12 @@ public class MainActivity extends AppCompatActivity implements TaskDeletionHandl
     private void sendOverdueNotification(String taskName) {
 
         if (sharedPreferences.getBoolean(SHARED_PREFS_KEY, true)) {
+
             String notificationTitle = "Overdue Task!";
             String notificationBody = taskName + " is overdue!";
 
             NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this, getString(R.string.default_notification_channel_id))
-                    .setSmallIcon(R.drawable.ic_android_black) // Replace with your notification icon
+                    .setSmallIcon(R.drawable.ic_android_black) // Notif icon
                     .setContentTitle(notificationTitle)
                     .setContentText(notificationBody)
                     .setStyle(new NotificationCompat.BigTextStyle().bigText(notificationBody))
@@ -304,13 +282,13 @@ public class MainActivity extends AppCompatActivity implements TaskDeletionHandl
 
             if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_NOTIFICATION_POLICY) == PackageManager.PERMISSION_GRANTED) {
                 NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
-                notificationManager.notify(taskName.hashCode(), notificationBuilder.build()); // Use task name hash for unique ID
+                notificationManager.notify(taskName.hashCode(), notificationBuilder.build()); // Task name hash for unique ID
             } else {
-                // Handle the case where permission is not granted
+                // If permission is not granted
                 Toast.makeText(this, "Notification permission is required to show overdue task notifications. Please enable it in app settings.", Toast.LENGTH_LONG).show();
             }
         } else {
-            // Toast message indicating notifications are disabled
+            // Toast indicating notifications are disabled
             Toast.makeText(this, "Notifications are currently disabled in app settings.", Toast.LENGTH_SHORT).show();
         }
     }
@@ -318,12 +296,11 @@ public class MainActivity extends AppCompatActivity implements TaskDeletionHandl
     // Calculate task status based on deadline and current date
     private String calculateTaskStatus(String currentStatus, String deadline) {
         try {
+
             SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
             Date currentDate = new Date();
             Date deadlineDate = dateFormat.parse(deadline);
-
-            // Create a Calendar instance for the deadline date
-            Calendar calendar = Calendar.getInstance();
+            Calendar calendar = Calendar.getInstance(); // Create a Calendar instance for the deadline date
             calendar.setTime(deadlineDate);
 
             // Add one day to the deadline date
@@ -344,11 +321,9 @@ public class MainActivity extends AppCompatActivity implements TaskDeletionHandl
         }
     }
 
-
-
-
     // Show dialog to create a new task
     private void showCreateTaskDialog() {
+
         AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
         builder.setTitle("Create New Task");
 
@@ -356,12 +331,10 @@ public class MainActivity extends AppCompatActivity implements TaskDeletionHandl
         View dialogView = inflater.inflate(R.layout.dialog_create_task, null);
         builder.setView(dialogView);
 
-
         EditText taskNameInput = dialogView.findViewById(R.id.taskNameInput);
         EditText deadlineInput = dialogView.findViewById(R.id.deadlineInput);
         EditText descriptionInput = dialogView.findViewById(R.id.descriptionInput);
         CheckBox addToCalendarCheckbox = dialogView.findViewById(R.id.addToCalendarCheckbox);
-
 
         deadlineInput.setOnClickListener(v -> showDatePicker(deadlineInput));
 
@@ -378,7 +351,6 @@ public class MainActivity extends AppCompatActivity implements TaskDeletionHandl
         });
 
         builder.setNegativeButton("Cancel", (dialog, which) -> dialog.dismiss());
-
         builder.show();
     }
 
@@ -490,13 +462,6 @@ public class MainActivity extends AppCompatActivity implements TaskDeletionHandl
         startActivity(intent);
     }
 
-    private void logoutUser() {
-        // Implement your logout logic here
-        // For example:
-        FirebaseAuth.getInstance().signOut();
-        startActivity(new Intent(MainActivity.this, login.class));
-        finish(); // Close MainActivity after logout
-    }
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle toolbar item clicks (e.g., menu icon)
@@ -505,6 +470,7 @@ public class MainActivity extends AppCompatActivity implements TaskDeletionHandl
         }
         return super.onOptionsItemSelected(item);
     }
+
     @Override
     public void onTaskDeleted(String deletedTaskID) {
         // Remove the deleted task from the data list

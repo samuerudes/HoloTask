@@ -50,21 +50,18 @@ public class appSettings extends AppCompatActivity {
         sharedPreferences = getSharedPreferences(getPackageName() + "_preferences", Context.MODE_PRIVATE);
         buttonLightMode = findViewById(R.id.buttonLightMode);
         buttonDarkMode = findViewById(R.id.buttonDarkMode);
-
-
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
         drawerLayout = findViewById(R.id.drawer_layout);
         navigationView = findViewById(R.id.nav_view);
 
-        // Setup navigation menu using existing navigationManager class
+        // Setup navigation menu using navigationManager class
         navigationManager.setupNavigationMenu(this, drawerLayout, navigationView, toolbar);
 
         notificationSwitch.setChecked(sharedPreferences.getBoolean(SHARED_PREFS_KEY, true));
 
         notificationSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            // Save switch state in SharedPreferences
+            // Save the state of switch in SharedPreferences
             sharedPreferences.edit().putBoolean(SHARED_PREFS_KEY, isChecked).apply();
 
             String message;
@@ -77,22 +74,25 @@ public class appSettings extends AppCompatActivity {
         });
 
         // Set click listeners for buttons
+        // Button for light mode
         buttonLightMode.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 // Set light mode
-                editor.putBoolean("theme_mode", false); // Store theme preference (optional)
+                editor.putBoolean("theme_mode", false); // Store theme preference
                 editor.apply();
                 setTheme(R.style.AppTheme); // Apply light theme style
                 AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
                 recreate();
             }
         });
+
+        // Button for dark mode
         buttonDarkMode.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 // Set dark mode
-                editor.putBoolean("theme_mode", true); // Store theme preference (optional)
+                editor.putBoolean("theme_mode", true); // Store theme preference
                 editor.apply();
                 setTheme(R.style.AppTheme_Dark); // Apply dark theme style
                 AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
