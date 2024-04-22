@@ -44,12 +44,11 @@
 
         <EditText
             android:id="@+id/email"
-            android:inputType="text"
+            android:inputType="textEmailAddress"
             android:layout_width="match_parent"
             android:layout_height="40dp"
             android:hint="@string/email"
-            android:paddingLeft="5dp"
-            android:layout_centerInParent="true"
+            android:paddingStart="5dp"
             android:layout_marginTop="30dp"
             android:layout_marginLeft="20dp"
             android:layout_marginRight="20dp"
@@ -62,8 +61,7 @@
             android:layout_width="match_parent"
             android:layout_height="40dp"
             android:hint="@string/password"
-            android:paddingLeft="5dp"
-            android:layout_centerInParent="true"
+            android:paddingStart="5dp"
             android:layout_marginTop="15dp"
             android:layout_marginLeft="20dp"
             android:layout_marginRight="20dp"
@@ -76,8 +74,7 @@
             android:layout_width="match_parent"
             android:layout_height="40dp"
             android:hint="@string/confirm_password"
-            android:paddingLeft="5dp"
-            android:layout_centerInParent="true"
+            android:paddingStart="5dp"
             android:layout_marginTop="15dp"
             android:layout_marginLeft="20dp"
             android:layout_marginRight="20dp"
@@ -121,7 +118,6 @@
                 android:layout_marginTop="10dp"
                 android:layout_marginEnd="10dp"
                 android:layout_marginBottom="10dp"
-                android:onClick="signInWithGoogle"
                 android:text="@string/continue_with_google" />
 
             <Button
@@ -130,8 +126,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerHorizontal="true"
-                android:text="@string/continue_with_discord"
-                android:onClick="signInWithDiscord"/>
+                android:text="@string/continue_with_discord" />
 
         </RelativeLayout>
 

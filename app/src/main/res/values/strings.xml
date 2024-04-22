@@ -22,7 +22,7 @@
     <string name="enter_user_discord_id">Enter user Discord ID</string>
     <string name="new_password">New Password:</string>
     <string name="enter_new_password">Enter new password</string>
-    <string name="save_changes">Save Changes</string>
+    <string name="save_changes">SAVE CHANGES</string>
     <string name="task_name">Task Name</string>
     <string name="due_date">Due Date</string>
     <string name="description">Description</string>
@@ -57,4 +57,11 @@
     <string name="account_details">Account Details</string>
     <string name="app_settings">App Settings</string>
     <string name="home">Home</string>
+    <string name="theme_modes">Theme Modes</string>
+    <string name="light_mode">LIGHT MODE</string>
+    <string name="dark_mode">DARK MODE</string>
+    <string name="notifications">Notifications</string>
+    <string name="enter_your_email">Enter your email</string>
+    <string name="reset_password">Reset Password</string>
+    <string name="back2">Back</string>
 </resources>
