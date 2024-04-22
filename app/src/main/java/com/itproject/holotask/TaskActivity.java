@@ -1,11 +1,9 @@
 package com.itproject.holotask;
 
 import android.app.DatePickerDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.util.Log;
@@ -17,34 +15,15 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Button;
 import android.widget.Toast;
-import android.app.NotificationManager.Policy;
-
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
-import androidx.core.app.NotificationCompat;
-import androidx.core.app.NotificationManagerCompat;
-import androidx.core.content.ContextCompat;
-
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
-
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.HashMap;
-
-import android.app.AlarmManager;
-import android.app.PendingIntent;
-import android.content.BroadcastReceiver;
-import android.content.Context;
-import android.content.Intent;
-import android.os.SystemClock;
 
 public class TaskActivity extends AppCompatActivity {
 
@@ -249,7 +228,7 @@ public class TaskActivity extends AppCompatActivity {
                                 public void onDateSet(DatePicker view, int selectedYear, int selectedMonth, int selectedDay) {
                                     myCalendar.set(Calendar.YEAR, selectedYear);
                                     myCalendar.set(Calendar.MONTH, selectedMonth);
-                                    myCalendar.set(Calendar.DAY_OF_MONTH, 1);
+                                    myCalendar.set(Calendar.DAY_OF_MONTH, selectedDay);
                                     // Set the time to 12:00 AM of the following day
                                     myCalendar.set(Calendar.HOUR_OF_DAY, 0);
                                     myCalendar.set(Calendar.MINUTE, 0);
