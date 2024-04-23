@@ -66,4 +66,5 @@
     <string name="back2">Back</string>
     <string name="work_in_progress">Work in Progress</string>
     <string name="back3">BACK</string>
+    <string name="delete_account">DELETE ACCOUNT</string>
 </resources>

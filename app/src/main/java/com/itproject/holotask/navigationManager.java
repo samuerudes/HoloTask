@@ -6,6 +6,7 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
@@ -47,9 +48,9 @@ public class navigationManager {
         } else if (itemId == R.id.nav_friends) {
             navigateToActivity(activity, friends.class);
         } else if (itemId == R.id.nav_logout) {
+            Toast.makeText(activity, "Logout successful.", Toast.LENGTH_SHORT).show();
             logoutUser(activity);
         }
-
         drawerLayout.closeDrawers();
     }
 

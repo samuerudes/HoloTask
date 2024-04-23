@@ -14,9 +14,10 @@
         <item
             android:id="@+id/nav_friends"
             android:title="@string/friends" />
-
     </group>
     <item
         android:id="@+id/nav_logout"
-        android:title="@string/log_out" />
+        android:title="@string/log_out"
+        android:textColor="@color/red" />
 </menu>
+

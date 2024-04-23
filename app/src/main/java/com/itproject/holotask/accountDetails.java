@@ -2,6 +2,7 @@ package com.itproject.holotask;
 
 import static android.widget.Toast.LENGTH_SHORT;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -12,6 +13,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.appcompat.widget.Toolbar;
@@ -72,7 +74,8 @@ public class accountDetails extends AppCompatActivity {
         editTextUsername = findViewById(R.id.editTextUsername);
         editTextUserDiscord = findViewById(R.id.editTextUserDiscord);
         editTextNewPassword = findViewById(R.id.editTextNewPassword);
-        buttonSaveChanges = findViewById(R.id.buttonSaveChanges);
+        Button buttonSaveChanges = findViewById(R.id.buttonSaveChanges);
+        Button buttonDeleteAccount = findViewById(R.id.buttonDeleteAccount);
         Button buttonBack = findViewById(R.id.buttonBack);
 
         // Initialize Firebase components
@@ -95,6 +98,15 @@ public class accountDetails extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 saveChanges();
+            }
+        });
+
+        buttonDeleteAccount.setBackgroundColor(getResources().getColor(R.color.red));
+        buttonDeleteAccount.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Show confirmation dialog before deleting account
+                showDeleteAccountDialog();
             }
         });
 
@@ -275,4 +287,53 @@ public class accountDetails extends AppCompatActivity {
                     });
         }
     }
+
+    private void showDeleteAccountDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("DELETE ACCOUNT");
+        builder.setMessage("Are you sure you want to delete your account? This action cannot be undone.");
+
+        // Set up the buttons
+        builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                // User clicked Yes, delete the account
+                deleteAccount();
+            }
+        });
+
+        builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                // User clicked No, dismiss the dialog
+                dialog.dismiss();
+            }
+        });
+
+        // Create and show the AlertDialog
+        AlertDialog dialog = builder.create();
+        dialog.show();
+    }
+
+    private void deleteAccount() {
+        // Delete the user's account from Firebase Auth and Firestore
+        currentUser.delete()
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if (task.isSuccessful()) {
+                            // Account deletion successful, navigate to login screen
+                            Toast.makeText(accountDetails.this, "Account deleted successfully", Toast.LENGTH_SHORT).show();
+                            startActivity(new Intent(accountDetails.this, login.class));
+                            finish(); // Close the current activity
+                        } else {
+                            // Account deletion failed
+                            Toast.makeText(accountDetails.this,
+                                    "Failed to delete account: " + task.getException().getMessage(),
+                                    Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
+    }
+
 }
