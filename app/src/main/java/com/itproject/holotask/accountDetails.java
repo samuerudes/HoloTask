@@ -34,6 +34,8 @@ import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import java.util.Objects;
+
 public class accountDetails extends AppCompatActivity {
 
     private DrawerLayout drawerLayout;
@@ -244,28 +246,49 @@ public class accountDetails extends AppCompatActivity {
     }
 
     private void updateUserDiscord(String newDiscord) {
-        if (newDiscord != null) {
-            // Check if newDiscord is not null and proceed with updating Firestore
-            DocumentReference userRef = db.collection("Users").document(currentUser.getUid());
-            userRef.update("userDiscord", newDiscord)
-                    .addOnCompleteListener(new OnCompleteListener<Void>() {
-                        @Override
-                        public void onComplete(@NonNull Task<Void> updateTask) {
-                            if (updateTask.isSuccessful()) {
-                                // Update successful
-                                currentDiscord = newDiscord;
-                                editTextUserDiscord.setText(newDiscord);
-                                Toast.makeText(accountDetails.this,
-                                        "Discord tag updated successfully",
-                                        Toast.LENGTH_SHORT).show();
-                            } else {
-                                // Failed to update Discord tag
-                                Toast.makeText(accountDetails.this,
-                                        "Failed to update Discord tag: " + updateTask.getException().getMessage(),
-                                        Toast.LENGTH_SHORT).show();
-                            }
+        if (!Objects.equals(newDiscord, "")) {
+            // Check for duplicate Discord before updating
+            Query discordQuery = db.collection("Users").whereEqualTo("userDiscord", newDiscord);
+            discordQuery.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                @Override
+                public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                    if (task.isSuccessful()) {
+                        if (task.getResult().isEmpty()) {
+                            // Discord is unique, proceed with update
+                            DocumentReference userRef = db.collection("Users").document(currentUser.getUid());
+                            userRef.update("userDiscord", newDiscord)
+                                    .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                        @Override
+                                        public void onComplete(@NonNull Task<Void> updateTask) {
+                                            if (updateTask.isSuccessful()) {
+                                                // Update succeeded
+                                                currentDiscord = newDiscord;
+                                                editTextUserDiscord.setText(newDiscord);
+                                                Toast.makeText(accountDetails.this,
+                                                        "Discord ID updated successfully",
+                                                        Toast.LENGTH_SHORT).show();
+                                            } else {
+                                                // Update failed
+                                                Toast.makeText(accountDetails.this,
+                                                        "Failed to update Discord ID: " + updateTask.getException().getMessage(),
+                                                        Toast.LENGTH_SHORT).show();
+                                            }
+                                        }
+                                    });
+                        } else {
+                            // Discord already exists, prompt user to choose a different one
+                            Toast.makeText(accountDetails.this,
+                                    "Discord ID already in use. Please choose a different one.",
+                                    Toast.LENGTH_SHORT).show();
                         }
-                    });
+                    } else {
+                        // Error occurred while checking for duplicate usernames
+                        Toast.makeText(accountDetails.this,
+                                "Failed to check for duplicate Discord ID: " + task.getException().getMessage(),
+                                Toast.LENGTH_SHORT).show();
+                    }
+                }
+            });
         } else {
             // Handle case where newDiscord is null
             DocumentReference userRef = db.collection("Users").document(currentUser.getUid());
