@@ -398,7 +398,7 @@ public class MainActivity extends AppCompatActivity implements TaskDeletionHandl
                     retrieveTasksFromFirestore(); // Refresh tasks after adding a new task
 
                     if (addToCalendar) {
-                        addToCalendar(taskName, deadline);
+                        addToCalendar(taskName, deadline, description);
 
                     }
                 })
@@ -432,7 +432,7 @@ public class MainActivity extends AppCompatActivity implements TaskDeletionHandl
     }
 
     // Add task to Google Calendar
-    private void addToCalendar(String taskName, String deadline) {
+    private void addToCalendar(String taskName, String deadline, String description) {
         try {
             SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
             Date deadlineDate = dateFormat.parse(deadline);
@@ -446,6 +446,7 @@ public class MainActivity extends AppCompatActivity implements TaskDeletionHandl
             Intent intent = new Intent(Intent.ACTION_INSERT)
                     .setData(CalendarContract.Events.CONTENT_URI)
                     .putExtra(CalendarContract.Events.TITLE, taskName)
+                    .putExtra(CalendarContract.Events.DESCRIPTION, description)
                     .putExtra(CalendarContract.Events.ALL_DAY, true)
                     .putExtra(CalendarContract.EXTRA_EVENT_BEGIN_TIME, calendar.getTimeInMillis());
 
