@@ -200,7 +200,7 @@ public class register extends AppCompatActivity {
             }
         });
 
-        googleAuth = findViewById(R.id.btnSignInWithGoogle);
+        googleAuth = findViewById(R.id.btnContinueWithGoogle);
 
         auth = FirebaseAuth.getInstance();
         database = FirebaseDatabase.getInstance();
@@ -215,6 +215,15 @@ public class register extends AppCompatActivity {
             @Override
             public void onClick(View view){
                 googleSignIn();
+            }
+        });
+
+        Button backButton = findViewById(R.id.btnContinueWithDiscord);
+        backButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(register.this, continueWithDiscord.class);
+                startActivity(intent);
             }
         });
     }

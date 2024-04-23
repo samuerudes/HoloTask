@@ -159,6 +159,16 @@ public class login extends AppCompatActivity {
                 googleSignIn();
             }
         });
+
+        Button backButton = findViewById(R.id.btnSignInWithDiscord);
+        backButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(login.this, signInWithDiscord.class);
+                startActivity(intent);
+            }
+        });
+
     }
 
     private void googleSignIn() {

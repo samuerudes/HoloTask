@@ -25,7 +25,27 @@
                 app:popupTheme="@style/AppTheme.PopupOverlay"
                 android:theme="@style/MyCustomToolbarStyle"/>
 
+
         </com.google.android.material.appbar.AppBarLayout>
+
+        <TextView
+            android:id="@+id/workInProgressText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/work_in_progress"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            android:layout_centerInParent="true" />
+
+        <Button
+            android:id="@+id/backButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/back3"
+            android:layout_below="@id/workInProgressText"
+            android:layout_marginTop="10dp"
+            android:layout_centerInParent="true" />
+
     </RelativeLayout>
 
     <com.google.android.material.navigation.NavigationView

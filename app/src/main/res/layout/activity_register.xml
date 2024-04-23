@@ -108,7 +108,7 @@
 
 
             <Button
-                android:id="@+id/btnSignInWithGoogle"
+                android:id="@+id/btnContinueWithGoogle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/lineImageView"
@@ -120,8 +120,8 @@
                 android:text="@string/continue_with_google" />
 
             <Button
-                android:id="@+id/btnSignInWithDiscord"
-                android:layout_below="@+id/btnSignInWithGoogle"
+                android:id="@+id/btnContinueWithDiscord"
+                android:layout_below="@+id/btnContinueWithGoogle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerHorizontal="true"

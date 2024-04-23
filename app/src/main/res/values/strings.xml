@@ -64,4 +64,6 @@
     <string name="enter_your_email">Enter your email</string>
     <string name="reset_password">Reset Password</string>
     <string name="back2">Back</string>
+    <string name="work_in_progress">Work in Progress</string>
+    <string name="back3">BACK</string>
 </resources>
