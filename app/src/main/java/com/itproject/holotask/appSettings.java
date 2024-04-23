@@ -84,6 +84,8 @@ public class appSettings extends AppCompatActivity {
                 setTheme(R.style.AppTheme); // Apply light theme style
                 AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
                 recreate();
+
+                Toast.makeText(getApplicationContext(), "Switched to Light Mode!", Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -97,6 +99,8 @@ public class appSettings extends AppCompatActivity {
                 setTheme(R.style.AppTheme_Dark); // Apply dark theme style
                 AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
                 recreate(); // Restart activity to apply changes
+
+                Toast.makeText(getApplicationContext(), "Switched to Dark Mode!", Toast.LENGTH_SHORT).show();
             }
         });
     }
