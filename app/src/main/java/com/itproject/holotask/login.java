@@ -31,6 +31,8 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
+import java.util.List;
+import java.util.Objects;
 
 public class login extends AppCompatActivity {
 
@@ -218,8 +220,26 @@ public class login extends AppCompatActivity {
     private void handleGoogleSignInResult(Task<GoogleSignInAccount> completedTask) {
         try {
             GoogleSignInAccount account = completedTask.getResult(ApiException.class);
-            // Use the account.getIdToken() for Firebase authentication
-            firebaseAuthWithGoogle(account.getIdToken());
+            String idToken = account.getIdToken();
+            String email = account.getEmail();
+
+            mAuth.fetchSignInMethodsForEmail(email)
+                    .addOnCompleteListener(task -> {
+                        if (task.isSuccessful()) {
+                            List<String> signInMethods = Objects.requireNonNull(task.getResult()).getSignInMethods();
+                            if (signInMethods != null && !signInMethods.isEmpty()) {
+                                // User is already registered, proceed with Firebase authentication
+                                firebaseAuthWithGoogle(idToken);
+                            } else {
+                                // User's email is not registered, prevent account creation
+                                Toast.makeText(login.this, "Account not found. Please register an account first by clicking 'Join Now'.", Toast.LENGTH_SHORT).show();
+                            }
+                        } else {
+                            // Error occurred while checking email registration status
+                            Toast.makeText(login.this, "Failed to check email registration status.", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+
         } catch (ApiException e) {
             // Handle sign-in failure
             Toast.makeText(this, "Google Sign-In Failed: " + e.getMessage(), Toast.LENGTH_SHORT).show();
