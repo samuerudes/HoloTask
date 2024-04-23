@@ -437,14 +437,17 @@ public class MainActivity extends AppCompatActivity implements TaskDeletionHandl
             SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
             Date deadlineDate = dateFormat.parse(deadline);
 
-            Calendar calendarEvent = Calendar.getInstance();
-            calendarEvent.setTime(deadlineDate);
+            // Adding 1 day to the deadline date
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTime(deadlineDate);
+            calendar.add(Calendar.DAY_OF_MONTH, 1); // Adding 1 day
 
+            // Create a calendar event with specific time
             Intent intent = new Intent(Intent.ACTION_INSERT)
                     .setData(CalendarContract.Events.CONTENT_URI)
                     .putExtra(CalendarContract.Events.TITLE, taskName)
                     .putExtra(CalendarContract.Events.ALL_DAY, true)
-                    .putExtra(CalendarContract.EXTRA_EVENT_BEGIN_TIME, calendarEvent.getTimeInMillis());
+                    .putExtra(CalendarContract.EXTRA_EVENT_BEGIN_TIME, calendar.getTimeInMillis());
 
             startActivity(intent);
 
