@@ -82,13 +82,12 @@
         <Button
             android:id="@+id/SignIn"
             android:layout_width="200dp"
-            android:layout_height="30dp"
+            android:layout_height="wrap_content"
             android:text="@string/sign_in"
-            android:textSize="12sp"
             android:layout_gravity="center"
-            android:padding="0dp"
-            android:layout_margin="10dp"
-            android:background="@drawable/signupbutton"/>
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="10dp"/>
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -105,7 +104,7 @@
 
             <Button
                 android:id="@+id/btnSignInWithGoogle"
-                android:layout_width="wrap_content"
+                android:layout_width="200dp"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/lineImageView"
                 android:layout_centerHorizontal="true"
@@ -113,17 +112,15 @@
                 android:layout_marginTop="10dp"
                 android:layout_marginEnd="10dp"
                 android:layout_marginBottom="10dp"
-                android:onClick="signInWithGoogle"
                 android:text="@string/sign_in_with_google" />
 
             <Button
                 android:id="@+id/btnSignInWithDiscord"
                 android:layout_below="@+id/btnSignInWithGoogle"
-                android:layout_width="wrap_content"
+                android:layout_width="200dp"
                 android:layout_height="wrap_content"
                 android:layout_centerHorizontal="true"
-                android:text="@string/sign_in_with_discord"
-                android:onClick="signInWithDiscord"/>
+                android:text="@string/sign_in_with_discord" />
 
         </RelativeLayout>
 
@@ -136,12 +133,8 @@
         android:layout_below="@id/container"
         android:text="@string/new_to_holotask_join_now"
         android:textColorLink="?attr/colorAccent"
+        android:layout_marginTop="5dp"
         android:layout_centerHorizontal="true" />
 
-    <ProgressBar
-        android:id="@+id/progressbar"
-        android:visibility="gone"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
 
 </RelativeLayout>

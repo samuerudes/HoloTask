@@ -14,7 +14,6 @@ import android.text.style.ClickableSpan;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.text.Spanned;
 import android.text.method.LinkMovementMethod;
@@ -31,6 +30,7 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
+
 import java.util.List;
 import java.util.Objects;
 
@@ -38,8 +38,8 @@ public class login extends AppCompatActivity {
 
     EditText editTextEmail, editTextPassword;
     Button buttonLogin, googleAuth;
+    FirebaseAuth auth;
     FirebaseAuth mAuth;
-    ProgressBar progressBar;
     GoogleSignInClient mGoogleSignInClient;
     int RC_SIGN_IN = 20;
 
@@ -106,7 +106,6 @@ public class login extends AppCompatActivity {
         editTextEmail = findViewById(R.id.email);
         editTextPassword = findViewById(R.id.password);
         buttonLogin = findViewById(R.id.SignIn);
-        progressBar = findViewById(R.id.progressbar);
         googleAuth = findViewById(R.id.btnSignInWithGoogle);
         mAuth = FirebaseAuth.getInstance();
 
@@ -114,7 +113,6 @@ public class login extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                progressBar.setVisibility(View.VISIBLE);
                 String email, password;
                 email = editTextEmail.getText().toString();
                 password = editTextPassword.getText().toString();
@@ -133,14 +131,11 @@ public class login extends AppCompatActivity {
                         .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                             @Override
                             public void onComplete(@NonNull Task<AuthResult> task) {
-                                progressBar.setVisibility(View.GONE);
                                 if (task.isSuccessful()) {
-                                    Toast.makeText(getApplicationContext(), "Authentication successful.",
-                                            Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(getApplicationContext(), "Authentication successful", Toast.LENGTH_SHORT).show();
                                     startMainActivity();
                                 } else {
-                                    Toast.makeText(login.this, "Authentication failed.",
-                                            Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(login.this, "Authentication failed. Please check your email or password", Toast.LENGTH_SHORT).show();
                                 }
                             }
                         });
@@ -202,18 +197,19 @@ public class login extends AppCompatActivity {
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
                             FirebaseUser user = mAuth.getCurrentUser();
-                            Toast.makeText(login.this, "Login with Google successful.", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(login.this, "Login with Google successful", Toast.LENGTH_SHORT).show();
 
                             startMainActivity();
                         } else {
-                            Toast.makeText(login.this, "Authentication Failed.", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(login.this, "Email or Password is incorrect", Toast.LENGTH_SHORT).show();
                         }
                     }
                 });
     }
 
     private void startMainActivity() {
-        generalMethods.startMainActivity(login.this);
+        Intent intent = new Intent(login.this, MainActivity.class);
+        startActivity(intent);
         finish();
     }
 
@@ -232,11 +228,11 @@ public class login extends AppCompatActivity {
                                 firebaseAuthWithGoogle(idToken);
                             } else {
                                 // User's email is not registered, prevent account creation
-                                Toast.makeText(login.this, "Account not found. Please register an account first by clicking 'Join Now'.", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(login.this, "Account not found. Please register an account first by clicking 'Join Now'", Toast.LENGTH_SHORT).show();
                             }
                         } else {
                             // Error occurred while checking email registration status
-                            Toast.makeText(login.this, "Failed to check email registration status.", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(login.this, "Failed to check email registration status", Toast.LENGTH_SHORT).show();
                         }
                     });
 

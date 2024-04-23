@@ -48,7 +48,7 @@ public class navigationManager {
         } else if (itemId == R.id.nav_friends) {
             navigateToActivity(activity, friends.class);
         } else if (itemId == R.id.nav_logout) {
-            Toast.makeText(activity, "Logout successful.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(activity, "Logout successful", Toast.LENGTH_SHORT).show();
             logoutUser(activity);
         }
         drawerLayout.closeDrawers();
