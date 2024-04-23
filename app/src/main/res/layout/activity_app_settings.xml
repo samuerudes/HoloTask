@@ -5,13 +5,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/drawer_layout"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="match_parent">
 
->
-
-    <!-- Include your main content layout here -->
-
-    <!-- NavigationView for the drawer -->
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -41,7 +36,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="110dp"
             android:layout_marginTop="100dp"
-            android:text="Theme Modes"
+            android:text="@string/theme_modes"
             android:textSize="30sp" />
 
 
@@ -51,7 +46,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="70dp"
             android:layout_marginTop="160dp"
-            android:text="Light Mode"
+            android:text="@string/light_mode"
  />
 
         <Button
@@ -60,7 +55,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="220dp"
             android:layout_marginTop="160dp"
-            android:text="Dark Mode"
+            android:text="@string/dark_mode"
             />
 
         <TextView
@@ -69,7 +64,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="130dp"
             android:layout_marginTop="270dp"
-            android:text="Notifications"
+            android:text="@string/notifications"
             android:textSize="30sp" />
 
         <Switch
@@ -78,9 +73,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="185dp"
             android:layout_marginTop="330dp"
-            android:text=""
-            />
-
+            android:text="" />
 
     </RelativeLayout>
 

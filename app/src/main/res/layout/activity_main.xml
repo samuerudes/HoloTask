@@ -9,13 +9,11 @@
     android:fitsSystemWindows="true"
     tools:context=".MainActivity">
 
-    <!-- Main content layout with vertical orientation -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <!-- App Bar (Toolbar) -->
         <com.google.android.material.appbar.AppBarLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
@@ -62,7 +60,6 @@
 
         </LinearLayout>
 
-        <!-- Fixed bottom layout for "Create Task" button -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -86,7 +83,6 @@
 
     </LinearLayout>
 
-    <!-- NavigationView for the drawer -->
     <com.google.android.material.navigation.NavigationView
         android:id="@+id/nav_view"
         android:layout_width="wrap_content"

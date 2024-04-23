@@ -59,7 +59,7 @@ public class CustomAdapter extends BaseAdapter {
         if (status.equals("OVERDUE")) {
             statusText.setTextColor(Color.RED);
         } else if (status.equals("ONGOING")) {
-            statusText.setTextColor(Color.YELLOW);
+            statusText.setTextColor(Color.BLUE);
         } else if (status.equals("COMPLETED")) {
             statusText.setTextColor(Color.GREEN);
         } else {
