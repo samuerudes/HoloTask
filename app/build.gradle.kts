@@ -8,7 +8,7 @@ android {
     compileSdk = 34
 
     defaultConfig {
-       applicationId = "com.itproject.holotask"
+        applicationId = "com.itproject.holotask"
         minSdk = 28
         targetSdk = 34
         versionCode = 1
@@ -64,5 +64,3 @@ dependencies {
     implementation ("androidx.navigation:navigation-ui-ktx:2.4.0")
     implementation ("com.google.firebase:firebase-messaging:23.0.6")
 }
-
-

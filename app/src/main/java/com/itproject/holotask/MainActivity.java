@@ -338,20 +338,31 @@ public class MainActivity extends AppCompatActivity implements TaskDeletionHandl
 
         deadlineInput.setOnClickListener(v -> showDatePicker(deadlineInput));
 
-        builder.setPositiveButton("Create", (dialog, which) -> {
-            String taskName = taskNameInput.getText().toString();
-            String deadline = deadlineInput.getText().toString();
-            String description = descriptionInput.getText().toString();
-
-            // Determine initial status based on the selected deadline
-            String initialStatus = calculateTaskStatus("Ongoing", deadline);
-
-            // Create new task in Firestore
-            createNewTask(taskName, initialStatus, deadline, description, addToCalendarCheckbox.isChecked());
-        });
+        builder.setPositiveButton("Create", null); // Set initially to null
 
         builder.setNegativeButton("Cancel", (dialog, which) -> dialog.dismiss());
-        builder.show();
+        AlertDialog dialog = builder.create();
+        dialog.setOnShowListener(dialogInterface -> {
+            Button positiveButton = dialog.getButton(AlertDialog.BUTTON_POSITIVE);
+            positiveButton.setOnClickListener(view -> {
+                String taskName = taskNameInput.getText().toString();
+                String deadline = deadlineInput.getText().toString();
+                String description = descriptionInput.getText().toString();
+
+                // Check if any of the required fields are empty
+                if (taskName.isEmpty() || deadline.isEmpty() || description.isEmpty()) {
+                    Toast.makeText(MainActivity.this, "Please fill in all fields.", Toast.LENGTH_SHORT).show();
+                } else {
+                    // Determine initial status based on the selected deadline
+                    String initialStatus = calculateTaskStatus("Ongoing", deadline);
+
+                    // Create new task in Firestore
+                    createNewTask(taskName, initialStatus, deadline, description, addToCalendarCheckbox.isChecked());
+                    dialog.dismiss(); // Dismiss the dialog only when all fields are filled in and task is created
+                }
+            });
+        });
+        dialog.show();
     }
 
     // Show DatePickerDialog to pick a deadline
