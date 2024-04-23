@@ -280,6 +280,7 @@ public class register extends AppCompatActivity {
                                                     DocumentSnapshot document = task.getResult();
                                                     if (document != null && document.exists()) {
                                                         // Document exists, do not overwrite
+                                                        Toast.makeText(register.this, "Login with Google successful.", Toast.LENGTH_SHORT).show();
                                                         redirectToMainActivity();
                                                     } else {
                                                         // Document doesn't exist, proceed with writing new data
@@ -302,6 +303,7 @@ public class register extends AppCompatActivity {
                                                                     @Override
                                                                     public void onSuccess(Void aVoid) {
                                                                         // Document has been successfully written
+                                                                        Toast.makeText(register.this, "Account creation using Google successful.", Toast.LENGTH_SHORT).show();
                                                                         redirectToMainActivity();
                                                                     }
                                                                 })

@@ -200,6 +200,7 @@ public class login extends AppCompatActivity {
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
                             FirebaseUser user = mAuth.getCurrentUser();
+                            Toast.makeText(login.this, "Login with Google successful.", Toast.LENGTH_SHORT).show();
 
                             startMainActivity();
                         } else {
