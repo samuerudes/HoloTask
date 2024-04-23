@@ -255,7 +255,7 @@ public class MainActivity extends AppCompatActivity implements TaskDeletionHandl
                         gridView.setAdapter(adapter);
 
                     } else {
-                        Log.w("Firestore", "Error fetching documents.", task.getException());
+                        Log.w("Firestore", "Error fetching documents", task.getException());
                     }
                 });
     }
@@ -285,11 +285,11 @@ public class MainActivity extends AppCompatActivity implements TaskDeletionHandl
                 notificationManager.notify(taskName.hashCode(), notificationBuilder.build()); // Task name hash for unique ID
             } else {
                 // If permission is not granted
-                Toast.makeText(this, "Notification permission is required to show overdue task notifications. Please enable it in app settings.", Toast.LENGTH_LONG).show();
+                Toast.makeText(this, "Notification permission is required to show overdue task notifications. Please enable it in app settings", Toast.LENGTH_LONG).show();
             }
         } else {
             // Toast indicating notifications are disabled
-            Toast.makeText(this, "Notifications are currently disabled in app settings.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Notifications are currently disabled in app settings", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -351,7 +351,7 @@ public class MainActivity extends AppCompatActivity implements TaskDeletionHandl
 
                 // Check if any of the required fields are empty
                 if (taskName.isEmpty() || deadline.isEmpty() || description.isEmpty()) {
-                    Toast.makeText(MainActivity.this, "Please fill in all fields.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(MainActivity.this, "Please fill in all fields", Toast.LENGTH_SHORT).show();
                 } else {
                     // Determine initial status based on the selected deadline
                     String initialStatus = calculateTaskStatus("Ongoing", deadline);
@@ -433,12 +433,12 @@ public class MainActivity extends AppCompatActivity implements TaskDeletionHandl
             notificationManager.notify(1, notificationBuilder.build());
         } else {
             // Handle the case where permission is not granted
-            Toast.makeText(this, "Notification permission is required to show task creation notifications. Please enable it in app settings.", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "Notification permission is required to show task creation notifications. Please enable it in app settings", Toast.LENGTH_LONG).show();
         }
         NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
         notificationManager.notify(1, notificationBuilder.build()); // Notification ID: 1
     } else {
-            Toast.makeText(this, "Notifications are currently disabled in app settings.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Notifications are currently disabled in app settings", Toast.LENGTH_SHORT).show();
         }
     }
 
