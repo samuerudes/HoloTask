@@ -8,10 +8,12 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.SeekBar;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Button;
 import android.widget.Toast;
@@ -31,6 +33,8 @@ public class TaskActivity extends AppCompatActivity {
     TextView deadlineTextView;
     TextView descTextView;
     private SeekBar seekBar;
+    private TextView timeRemainTextView;
+    private String deadline;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,6 +66,7 @@ public class TaskActivity extends AppCompatActivity {
         Button deleteButton = findViewById(R.id.deleteTaskButton);
         Button completeTaskButton = findViewById(R.id.completeTaskButton);
         seekBar = findViewById(R.id.seekBar);
+        timeRemainTextView = findViewById(R.id.timeRemain);
 
         SharedPreferences sharedPref = getSharedPreferences("taskProgress", MODE_PRIVATE);
 
@@ -76,10 +81,12 @@ public class TaskActivity extends AppCompatActivity {
         // Retrieve task data passed from MainActivity
         Intent intent = getIntent();
         String taskName = intent.getStringExtra("taskName");
-        String deadline = intent.getStringExtra("deadline");
+        deadline = intent.getStringExtra("deadline");
         String description = intent.getStringExtra("description");
         String taskID = intent.getStringExtra("taskID");
         String status = intent.getStringExtra("status");
+
+        fetchTaskStatusFromFirestore(taskID);
 
         int seekbarProgress = sharedPref.getInt(taskID, 0);
         seekBar.setProgress(seekbarProgress);
@@ -186,12 +193,85 @@ public class TaskActivity extends AppCompatActivity {
         });
     }
 
+    private void fetchTaskStatusFromFirestore(String taskID) {
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+        db.collection("UserTasks")
+                .document(taskID)
+                .get()
+                .addOnSuccessListener(documentSnapshot -> {
+                    if (documentSnapshot.exists()) {
+                        // Get the status from Firestore
+                        String status = documentSnapshot.getString("taskStatus");
+                        if (status != null) {
+                            // Update the UI with the fetched status
+                            if (status.equals("Completed") || status.equals("Overdue")) {
+                                // Display status directly from Firestore
+                                timeRemainTextView.setText(status);
+                            } else {
+                                // Calculate time remaining if not completed or overdue
+                                // Get current time in milliseconds
+                                Calendar nowCalendar = Calendar.getInstance();
+                                long now = nowCalendar.getTimeInMillis();
+
+                                // Parse the deadline date
+                                SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+                                Date deadlineDate;
+                                try {
+                                    deadlineDate = dateFormat.parse(deadline);
+                                } catch (ParseException e) {
+                                    e.printStackTrace();
+                                    // Handle parsing error
+                                    timeRemainTextView.setText("Error: Invalid Deadline Format");
+                                    return;
+                                }
+
+                                // Get the deadline time in milliseconds
+                                Calendar deadlineCalendar = Calendar.getInstance();
+                                deadlineCalendar.setTime(deadlineDate);
+                                deadlineCalendar.set(Calendar.HOUR_OF_DAY, 0);
+                                deadlineCalendar.set(Calendar.MINUTE, 0);
+                                deadlineCalendar.set(Calendar.SECOND, 0);
+                                deadlineCalendar.add(Calendar.DAY_OF_MONTH, 1); // Add one day to get to the end of the following day
+                                long adjustedDeadline = deadlineCalendar.getTimeInMillis();
+
+                                if (now > adjustedDeadline) {
+                                    // Calculate overdue time
+                                    long overdue = now - adjustedDeadline;
+                                    int overdueDays = (int) (overdue / (1000 * 60 * 60 * 24));
+                                    int overdueHours = (int) ((overdue % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                                    int overdueMinutes = (int) ((overdue % (1000 * 60 * 60)) / (1000 * 60));
+
+                                    // Update timeRemain TextView with overdue message
+                                    String overdueMessage = "Overdue by: " + overdueDays + " days, " + overdueHours + " hours, " + overdueMinutes + " minutes";
+                                    timeRemainTextView.setText(overdueMessage);
+                                } else {
+                                    // Calculate time remaining if not overdue
+                                    long remaining = adjustedDeadline - now;
+                                    int days = (int) (remaining / (1000 * 60 * 60 * 24));
+                                    int hours = (int) ((remaining % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                                    int minutes = (int) ((remaining % (1000 * 60 * 60)) / (1000 * 60));
+
+                                    // Update timeRemain TextView with remaining time
+                                    String timeRemainingString = "Days: " + days + ", Hours: " + hours + ", Minutes: " + minutes;
+                                    timeRemainTextView.setText(timeRemainingString);
+                                }
+                            }
+                    }}
+                })
+                .addOnFailureListener(e -> {
+                    // Handle failure to retrieve status from Firestore
+                    Log.e("Firestore", "Error retrieving task status", e);
+                });
+    }
+
     private void showEditTaskDialog(String taskID) {
         // Retrieve task data from Intent
         Intent intent = getIntent();
         String taskName = intent.getStringExtra("taskName");
         String deadline = intent.getStringExtra("deadline");
         String description = intent.getStringExtra("description");
+        String status = intent.getStringExtra("status");
 
 
         // Create an AlertDialog builder
@@ -205,6 +285,7 @@ public class TaskActivity extends AppCompatActivity {
         EditText taskNameInput = layout.findViewById(R.id.editTaskName);
         EditText deadlineInput = layout.findViewById(R.id.editDeadline);
         EditText descriptionInput = layout.findViewById(R.id.editDescription);
+        Spinner statusSpinner = layout.findViewById(R.id.editStatus);
 
         // Set pre-filled values with current task data
         taskNameInput.setText(taskName);
@@ -241,9 +322,24 @@ public class TaskActivity extends AppCompatActivity {
             }
         });
 
+        // Populate Spinner with status options
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
+                R.array.status_array, android.R.layout.simple_spinner_item);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        statusSpinner.setAdapter(adapter);
+
+        // Set the current status selection
+        if (status != null) {
+            int spinnerPosition = adapter.getPosition(status);
+            statusSpinner.setSelection(spinnerPosition);
+        }
+
         builder.setView(layout);
 
         // Add buttons to save or cancel changes
+
+
+
         builder.setPositiveButton("Save", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
@@ -251,11 +347,60 @@ public class TaskActivity extends AppCompatActivity {
                 String editedTaskName = taskNameInput.getText().toString();
                 String editedDeadline = deadlineInput.getText().toString();
                 String editedDescription = descriptionInput.getText().toString();
+                String editedStatus = statusSpinner.getSelectedItem().toString();
+
+                // Check if the status is being changed from "Ongoing" or "Completed" to "Overdue"
+                if ((status.equals("Ongoing") || status.equals("Completed")) && editedStatus.equals("Overdue")) {
+                    // Parse the edited and current deadline dates
+                    SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+                    Date editedDeadlineDate;
+                    Date currentDate;
+                    try {
+                        editedDeadlineDate = dateFormat.parse(editedDeadline);
+                        currentDate = dateFormat.parse(dateFormat.format(new Date()));
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                        // Handle parsing error
+                        Toast.makeText(TaskActivity.this, "Invalid deadline format", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+
+                    // Compare the edited deadline date with the current date
+                    if (editedDeadlineDate.after(currentDate)) {
+                        // If edited deadline date is after the current date, keep the status unchanged
+                        Toast.makeText(TaskActivity.this, "Unable to change status", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+                }
+
+                // Check if the status is being changed from "Overdue" to "Ongoing"
+                if (status.equals("Overdue") && editedStatus.equals("Ongoing")) {
+                    // Parse the edited and current deadline dates
+                    SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+                    Date editedDeadlineDate;
+                    Date currentDate;
+                    try {
+                        editedDeadlineDate = dateFormat.parse(editedDeadline);
+                        currentDate = dateFormat.parse(dateFormat.format(new Date()));
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                        // Handle parsing error
+                        Toast.makeText(TaskActivity.this, "Invalid deadline format", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+
+                    // Compare the edited deadline date with the current date
+                    if (editedDeadlineDate.before(currentDate)) {
+                        // If edited deadline date is before the current date, keep the status unchanged
+                        Toast.makeText(TaskActivity.this, "Unable to change status", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+                }
 
                 // Update task in Firestore
-                updateTaskInFirestore(taskID, editedTaskName, editedDeadline, editedDescription);  // Call update method
+                updateTaskInFirestore(taskID, editedTaskName, editedDeadline, editedDescription, editedStatus);
 
-                // Update UI with edited task details (optional)
+                // Update UI with edited task details
                 TaskName.setText(editedTaskName);
                 deadlineTextView.setText(editedDeadline);
                 descTextView.setText(editedDescription);
@@ -314,7 +459,7 @@ public class TaskActivity extends AppCompatActivity {
     }
 
     // Update task in Firestore (assuming Firebase is already set up)
-    private void updateTaskInFirestore(String taskID, String editedTaskName, String editedDeadline, String editedDescription) {
+    private void updateTaskInFirestore(String taskID, String editedTaskName, String editedDeadline, String editedDescription, String editedStatus) {
         // Get an instance of Firebase Firestore
         FirebaseFirestore db = FirebaseFirestore.getInstance();
 
@@ -329,11 +474,12 @@ public class TaskActivity extends AppCompatActivity {
                 .get()
                 .addOnSuccessListener(queryDocumentSnapshots -> {
                     for (QueryDocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
-                        // Update each matching document with the new data
+                        // Update each matching document with the new data including status
                         documentSnapshot.getReference().update(
                                 "taskName", editedTaskName,
                                 "endDateTime", editedDeadline,
-                                "taskDescription", editedDescription
+                                "taskDescription", editedDescription,
+                                "taskStatus", editedStatus // Add status update
                         ).addOnSuccessListener(aVoid -> {
                             Log.d("Firestore", "Document successfully updated!");
                             Toast.makeText(TaskActivity.this, "Task edited successfully!", Toast.LENGTH_SHORT).show();

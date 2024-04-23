@@ -67,4 +67,9 @@
     <string name="work_in_progress">Work in Progress</string>
     <string name="back3">BACK</string>
     <string name="delete_account">DELETE ACCOUNT</string>
+    <string-array name="status_array">
+        <item>Ongoing</item>
+        <item>Completed</item>
+        <item>Overdue</item>
+    </string-array>
 </resources>
