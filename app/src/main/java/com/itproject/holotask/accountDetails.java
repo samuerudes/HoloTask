@@ -20,6 +20,8 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.drawerlayout.widget.DrawerLayout;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
@@ -29,6 +31,7 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
 public class accountDetails extends AppCompatActivity {
@@ -316,7 +319,12 @@ public class accountDetails extends AppCompatActivity {
     }
 
     private void deleteAccount() {
-        // Delete the user's account from Firebase Auth and Firestore
+        // Get the current user's UID
+        String userId = currentUser.getUid();
+
+        // Delete user data from Firestore (if applicable)
+        deleteUser(userId);
+        deleteUserTasks(userId);
         currentUser.delete()
                 .addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
@@ -331,6 +339,56 @@ public class accountDetails extends AppCompatActivity {
                             Toast.makeText(accountDetails.this,
                                     "Failed to delete account: " + task.getException().getMessage(),
                                     Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
+    }
+
+    private void deleteUser(String userId) {
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        db.collection("Users")
+                .document(userId)
+                .delete()
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        // User data deleted from Firestore
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        // Handle Firestore deletion error
+                        Toast.makeText(accountDetails.this,
+                                "Failed to delete user data: " + e.getMessage(),
+                                Toast.LENGTH_SHORT).show();
+                    }
+                });
+    }
+
+    private void deleteUserTasks(String userId) {
+        // Create a query to find all tasks where "userId" field matches the current user
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        Query query = db.collection("UserTasks")
+                .whereEqualTo("userId", userId);
+
+        // Delete all matching tasks in a batch
+        db.collection("UserTasks")
+                .whereEqualTo("userId", userId)
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                document.getReference().delete();
+                            }
+                            // All tasks deleted successfully
+                        } else {
+                            // Handle error retrieving tasks
+                            Toast.makeText(accountDetails.this,
+                                    "Failed to delete user tasks: " + task.getException().getMessage(),
+                                    LENGTH_SHORT).show();
                         }
                     }
                 });
