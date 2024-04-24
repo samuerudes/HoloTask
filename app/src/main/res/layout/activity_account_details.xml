@@ -102,7 +102,7 @@
                 android:text="@string/delete_account"
                 android:layout_below="@id/buttonSaveChanges"
                 android:layout_marginTop="16dp"
-                android:backgroundTint="@color/red"/>
+                android:theme="@style/RedButton"/>
 
             <Button
                 android:id="@+id/buttonBack"

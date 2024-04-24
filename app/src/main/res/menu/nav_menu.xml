@@ -17,7 +17,6 @@
     </group>
     <item
         android:id="@+id/nav_logout"
-        android:title="@string/log_out"
-        android:textColor="@color/red" />
+        android:title="@string/log_out" />
 </menu>
 
