@@ -18,7 +18,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.os.Build;
 import android.os.Bundle;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -54,14 +53,13 @@ public class MainActivity extends AppCompatActivity implements TaskDeletionHandl
 
     private DrawerLayout drawerLayout;
     private ActionBarDrawerToggle drawerToggle;
-    private NavigationView navigationView;
     private GridView gridView;
     private CustomAdapter adapter;
-    private FirebaseFirestore db = FirebaseFirestore.getInstance();
+    private final FirebaseFirestore db = FirebaseFirestore.getInstance();
     private List<String[]> data = new ArrayList<>();  // Declare and initialize data list
     private static final String SHARED_PREFS_KEY = "notification_enabled";
     private SharedPreferences sharedPreferences;
-    private Switch notificationSwitch;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -96,9 +94,9 @@ public class MainActivity extends AppCompatActivity implements TaskDeletionHandl
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         drawerLayout = findViewById(R.id.drawer_layout);
-        navigationView = findViewById(R.id.nav_view);
+        NavigationView navigationView = findViewById(R.id.nav_view);
         sharedPreferences = getSharedPreferences(getPackageName() + "_preferences", Context.MODE_PRIVATE);
-        notificationSwitch = appSettingsView.findViewById(R.id.switchNotif);
+        Switch notificationSwitch = appSettingsView.findViewById(R.id.switchNotif);
         notificationSwitch.setChecked(sharedPreferences.getBoolean(SHARED_PREFS_KEY, true)); // Set switch state based on saved preference
         View headerView = navigationView.getHeaderView(0);
         TextView greetingTextView = headerView.findViewById(R.id.greetingTextView);
@@ -110,20 +108,16 @@ public class MainActivity extends AppCompatActivity implements TaskDeletionHandl
             sharedPreferences.edit().putBoolean(SHARED_PREFS_KEY, isChecked).apply();
         });
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if (checkSelfPermission(Manifest.permission.ACCESS_NOTIFICATION_POLICY) != PackageManager.PERMISSION_GRANTED) {
-                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_NOTIFICATION_POLICY}, 100);
-            }
+        if (checkSelfPermission(Manifest.permission.ACCESS_NOTIFICATION_POLICY) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_NOTIFICATION_POLICY}, 100);
         }
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            String channelId = getString(R.string.default_notification_channel_id);
-            String channelName = getString(R.string.default_notification_channel_name);
-            NotificationChannel channel = new NotificationChannel(channelId, channelName, NotificationManager.IMPORTANCE_DEFAULT);
-            channel.setDescription(getString(R.string.default_notification_channel_description));
-            NotificationManager notificationManager = getSystemService(NotificationManager.class);
-            notificationManager.createNotificationChannel(channel);
-        }
+        String channelId = getString(R.string.default_notification_channel_id);
+        String channelName = getString(R.string.default_notification_channel_name);
+        NotificationChannel channel = new NotificationChannel(channelId, channelName, NotificationManager.IMPORTANCE_DEFAULT);
+        channel.setDescription(getString(R.string.default_notification_channel_description));
+        NotificationManager notificationManager = getSystemService(NotificationManager.class);
+        notificationManager.createNotificationChannel(channel);
 
         // Set up navigation menu using navigationManager
         navigationManager.setupNavigationMenu(MainActivity.this, drawerLayout, navigationView, toolbar);
@@ -151,10 +145,9 @@ public class MainActivity extends AppCompatActivity implements TaskDeletionHandl
         // Set navigation item click listener
         navigationView.setNavigationItemSelectedListener(item -> {
             // Store the item in a final reference
-            final MenuItem menuItem = item;
 
             // Handle navigation item clicks using navigationManager
-            navigationManager.handleNavigationItemClick(MainActivity.this, menuItem, drawerLayout);
+            navigationManager.handleNavigationItemClick(MainActivity.this, item, drawerLayout);
             drawerLayout.closeDrawers();
             return true;
         });
@@ -241,6 +234,7 @@ public class MainActivity extends AppCompatActivity implements TaskDeletionHandl
                                 try {
                                     Date date1 = dateFormat.parse(deadline1);
                                     Date date2 = dateFormat.parse(deadline2);
+                                    assert date1 != null;
                                     return date1.compareTo(date2); // Compare by date
                                 } catch (ParseException e) {
                                     e.printStackTrace();
@@ -301,6 +295,7 @@ public class MainActivity extends AppCompatActivity implements TaskDeletionHandl
             Date currentDate = new Date();
             Date deadlineDate = dateFormat.parse(deadline);
             Calendar calendar = Calendar.getInstance(); // Create a Calendar instance for the deadline date
+            assert deadlineDate != null;
             calendar.setTime(deadlineDate);
 
             // Add one day to the deadline date

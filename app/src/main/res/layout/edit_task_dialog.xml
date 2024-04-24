@@ -1,39 +1,49 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:layout_height="match_parent">
 
     <EditText
         android:id="@+id/editTaskName"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
         android:hint="@string/task_name_edit" />
 
     <EditText
         android:id="@+id/editDeadline"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_below="@id/editTaskName"
+        android:layout_marginTop="8dp"
         android:hint="@string/due_date_tap_to_select" />
 
     <EditText
         android:id="@+id/editDescription"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_below="@id/editDeadline"
+        android:layout_marginTop="8dp"
         android:hint="@string/description_edit" />
 
     <TextView
         android:id="@+id/textViewStatus"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textAlignment="center"
-        android:text="Status" />
+        android:textSize="18sp"
+        android:layout_marginStart="4dp"
+        android:text="@string/status"
+        android:layout_below="@id/editDescription"
+        android:layout_marginTop="7dp"
+        android:layout_alignParentStart="true" />
 
     <Spinner
         android:id="@+id/editStatus"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/editDescription"
+        android:layout_marginTop="8dp"
+        android:layout_marginStart="20dp"
+        android:layout_toEndOf="@id/textViewStatus" />
 
-
-
-</LinearLayout>
+</RelativeLayout>

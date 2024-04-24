@@ -4,14 +4,16 @@ import android.app.DatePickerDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.DatePicker;
 import android.widget.EditText;
-import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -279,7 +281,7 @@ public class TaskActivity extends AppCompatActivity {
         builder.setTitle("Edit Task");
 
         // Inflate a layout for the dialog
-        LinearLayout layout = (LinearLayout) getLayoutInflater().inflate(R.layout.edit_task_dialog, null);
+        RelativeLayout layout = (RelativeLayout) getLayoutInflater().inflate(R.layout.edit_task_dialog, null);
 
         // Get references to input fields in the layout
         EditText taskNameInput = layout.findViewById(R.id.editTaskName);
@@ -322,10 +324,52 @@ public class TaskActivity extends AppCompatActivity {
             }
         });
 
-        // Populate Spinner with status options
-        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
-                R.array.status_array, android.R.layout.simple_spinner_item);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        // Define status options
+        String[] statusOptions = getResources().getStringArray(R.array.status_array);
+
+
+        // Create a custom adapter for the spinner
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, statusOptions) {
+            @Override
+            public View getView(int position, View convertView, ViewGroup parent) {
+                TextView view = (TextView) super.getView(position, convertView, parent);
+                // Customize the appearance of the selected item
+                String item = statusOptions[position];
+                view.setText(item.toUpperCase()); // Uppercase the text
+
+                // Set text color based on status type
+                if (item.equalsIgnoreCase("OVERDUE")) {
+                    view.setTextColor(Color.RED);
+                } else if (item.equalsIgnoreCase("ONGOING")) {
+                    view.setTextColor(Color.BLUE);
+                } else if (item.equalsIgnoreCase("COMPLETED")) {
+                    view.setTextColor(Color.GREEN);
+                }
+                return view;
+            }
+
+            @Override
+            public View getDropDownView(int position, View convertView, ViewGroup parent) {
+                TextView view = (TextView) super.getDropDownView(position, convertView, parent);
+                // Customize the appearance of each dropdown item
+                String item = statusOptions[position];
+                view.setText(item.toUpperCase()); // Uppercase the text
+
+                // Set text color based on status type
+                if (item.equalsIgnoreCase("OVERDUE")) {
+                    view.setTextColor(Color.RED);
+                } else if (item.equalsIgnoreCase("ONGOING")) {
+                    view.setTextColor(Color.BLUE);
+                } else if (item.equalsIgnoreCase("COMPLETED")) {
+                    view.setTextColor(Color.GREEN);
+                }
+
+                view.setPadding(16, 24, 16, 24);
+                return view;
+            }
+        };
+
+        // Set the adapter to the spinner
         statusSpinner.setAdapter(adapter);
 
         // Set the current status selection
@@ -337,8 +381,6 @@ public class TaskActivity extends AppCompatActivity {
         builder.setView(layout);
 
         // Add buttons to save or cancel changes
-
-
 
         builder.setPositiveButton("Save", new DialogInterface.OnClickListener() {
             @Override
@@ -474,15 +516,13 @@ public class TaskActivity extends AppCompatActivity {
                 .get()
                 .addOnSuccessListener(queryDocumentSnapshots -> {
                     for (QueryDocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
-                        // Update each matching document with the new data including status
                         documentSnapshot.getReference().update(
                                 "taskName", editedTaskName,
                                 "endDateTime", editedDeadline,
                                 "taskDescription", editedDescription,
-                                "taskStatus", editedStatus // Add status update
+                                "taskStatus", editedStatus
                         ).addOnSuccessListener(aVoid -> {
                             Log.d("Firestore", "Document successfully updated!");
-                            Toast.makeText(TaskActivity.this, "Task edited successfully!", Toast.LENGTH_SHORT).show();
                         }).addOnFailureListener(e -> {
                             Log.w("Firestore", "Error updating document", e);
                             Toast.makeText(TaskActivity.this, "Failed to update task!", Toast.LENGTH_SHORT).show();
