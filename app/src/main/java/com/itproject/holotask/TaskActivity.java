@@ -410,7 +410,11 @@ public class TaskActivity extends AppCompatActivity {
                     // Compare the edited deadline date with the current date
                     if (editedDeadlineDate.after(currentDate)) {
                         // If edited deadline date is after the current date, keep the status unchanged
-                        Toast.makeText(TaskActivity.this, "Unable to edit, please update the Date accordingly.", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(TaskActivity.this, "Unable to edit, please update the DATE accordingly.", Toast.LENGTH_SHORT).show();
+                        return;
+                    } else if (editedDeadlineDate.equals(currentDate)) {
+                        // If edited deadline date is the same as the current date, keep the status unchanged
+                        Toast.makeText(TaskActivity.this, "Unable to edit, please update the DATE accordingly.", Toast.LENGTH_SHORT).show();
                         return;
                     }
                 }
