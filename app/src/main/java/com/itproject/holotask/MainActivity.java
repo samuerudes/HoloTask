@@ -64,8 +64,20 @@ public class MainActivity extends AppCompatActivity implements TaskDeletionHandl
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         // Get the current theme mode from shared preferences
-        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
-        boolean isDarkMode = sharedPref.getBoolean("theme_mode", false);
+        // Initialize sharedPreferences
+        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+
+        // Get the current theme mode from shared preferences
+        boolean isDarkMode = sharedPreferences.getBoolean("theme_mode", false);
+
+
+        boolean notificationToastShown = sharedPreferences.getBoolean("notification_toast_shown", false);
+        if (!notificationToastShown && !sharedPreferences.getBoolean(SHARED_PREFS_KEY, true)) {
+            // Show the toast only if notifications are disabled and the toast hasn't been shown before
+            Toast.makeText(this, "Notifications are currently disabled in app settings.", Toast.LENGTH_SHORT).show();
+            // Update the flag to indicate that the toast has been shown
+            sharedPreferences.edit().putBoolean("notification_toast_shown", true).apply();
+        }
 
         // Apply the theme based on the saved mode
         if (isDarkMode) {
@@ -432,9 +444,7 @@ public class MainActivity extends AppCompatActivity implements TaskDeletionHandl
         }
         NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
         notificationManager.notify(1, notificationBuilder.build()); // Notification ID: 1
-    } else {
-            Toast.makeText(this, "Notifications are currently disabled in app settings", Toast.LENGTH_SHORT).show();
-        }
+    }
     }
 
     // Add task to Google Calendar
