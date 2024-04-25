@@ -68,7 +68,7 @@ public class appSettings extends AppCompatActivity {
             if (isChecked) {
                 message = "Notifications enabled!";
             } else {
-                message = "Notifications disabled.";
+                message = "Notifications disabled!";
             }
             Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
         });

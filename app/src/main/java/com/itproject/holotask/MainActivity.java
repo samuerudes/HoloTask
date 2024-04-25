@@ -74,7 +74,7 @@ public class MainActivity extends AppCompatActivity implements TaskDeletionHandl
         boolean notificationToastShown = sharedPreferences.getBoolean("notification_toast_shown", false);
         if (!notificationToastShown && !sharedPreferences.getBoolean(SHARED_PREFS_KEY, true)) {
             // Show the toast only if notifications are disabled and the toast hasn't been shown before
-            Toast.makeText(this, "Notifications are currently disabled in app settings.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Notifications are currently disabled in app settings", Toast.LENGTH_SHORT).show();
             // Update the flag to indicate that the toast has been shown
             sharedPreferences.edit().putBoolean("notification_toast_shown", true).apply();
         }
@@ -153,16 +153,6 @@ public class MainActivity extends AppCompatActivity implements TaskDeletionHandl
                         Log.e("MainActivity", "Error fetching username", e);
                     });
         }
-
-        // Set navigation item click listener
-        navigationView.setNavigationItemSelectedListener(item -> {
-            // Store the item in a final reference
-
-            // Handle navigation item clicks using navigationManager
-            navigationManager.handleNavigationItemClick(MainActivity.this, item, drawerLayout);
-            drawerLayout.closeDrawers();
-            return true;
-        });
 
         // Fetch tasks from Firestore and populate the GridView
         retrieveTasksFromFirestore();
