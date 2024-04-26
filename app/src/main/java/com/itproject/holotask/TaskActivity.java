@@ -34,7 +34,6 @@ public class TaskActivity extends AppCompatActivity {
     TextView TaskName;
     TextView deadlineTextView;
     TextView descTextView;
-    private SeekBar seekBar;
     private TextView timeRemainTextView;
     private String deadline;
 
@@ -67,7 +66,7 @@ public class TaskActivity extends AppCompatActivity {
         Button editButton = findViewById(R.id.editTaskButton);
         Button deleteButton = findViewById(R.id.deleteTaskButton);
         Button completeTaskButton = findViewById(R.id.completeTaskButton);
-        seekBar = findViewById(R.id.seekBar);
+        SeekBar seekBar = findViewById(R.id.seekBar);
         timeRemainTextView = findViewById(R.id.timeRemain);
 
         SharedPreferences sharedPref = getSharedPreferences("taskProgress", MODE_PRIVATE);

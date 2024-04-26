@@ -16,8 +16,6 @@ import com.google.firebase.auth.FirebaseAuth;
 public class forgotPassword extends AppCompatActivity {
 
     private EditText emailEditText;
-    private Button resetButton;
-    private Button backButton;
     private FirebaseAuth mAuth;
 
     @Override
@@ -28,8 +26,8 @@ public class forgotPassword extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
 
         emailEditText = findViewById(R.id.forgotPasswordEmail);
-        resetButton = findViewById(R.id.resetPasswordButton);
-        backButton = findViewById(R.id.backButton);
+        Button resetButton = findViewById(R.id.resetPasswordButton);
+        Button backButton = findViewById(R.id.backButton);
 
         resetButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -48,7 +46,7 @@ public class forgotPassword extends AppCompatActivity {
                                 if (task.isSuccessful()) {
                                     Toast.makeText(forgotPassword.this, "Password reset email sent", Toast.LENGTH_SHORT).show();
                                 } else {
-                                    Toast.makeText(forgotPassword.this, "Failed to send password reset email", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(forgotPassword.this, "Email not found", Toast.LENGTH_SHORT).show();
                                 }
                             }
                         });

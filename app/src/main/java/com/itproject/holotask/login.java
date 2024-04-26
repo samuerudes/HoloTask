@@ -169,13 +169,10 @@ public class login extends AppCompatActivity {
     }
 
     private void googleSignIn() {
-        mGoogleSignInClient.signOut().addOnCompleteListener(this, new OnCompleteListener<Void>() {
-            @Override
-            public void onComplete(@NonNull Task<Void> task) {
-                // Start sign-in process after signing out
-                Intent signInIntent = mGoogleSignInClient.getSignInIntent();
-                startActivityForResult(signInIntent, RC_SIGN_IN);
-            }
+        mGoogleSignInClient.signOut().addOnCompleteListener(this, task -> {
+            // Start sign-in process after signing out
+            Intent signInIntent = mGoogleSignInClient.getSignInIntent();
+            startActivityForResult(signInIntent, RC_SIGN_IN);
         });
     }
 

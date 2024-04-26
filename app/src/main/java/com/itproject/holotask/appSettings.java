@@ -17,12 +17,6 @@ import android.widget.Toast;
 
 public class appSettings extends AppCompatActivity {
 
-    private DrawerLayout drawerLayout;
-    private NavigationView navigationView;
-    private Toolbar toolbar;
-    private Button buttonLightMode;
-    private Button buttonDarkMode;
-    private Switch notificationSwitch;
     private SharedPreferences sharedPreferences;
     private static final String SHARED_PREFS_KEY = "notification_enabled";
 
@@ -46,14 +40,14 @@ public class appSettings extends AppCompatActivity {
 
         setContentView(R.layout.activity_app_settings);
 
-        notificationSwitch = findViewById(R.id.switchNotif);
+        Switch notificationSwitch = findViewById(R.id.switchNotif);
         sharedPreferences = getSharedPreferences(getPackageName() + "_preferences", Context.MODE_PRIVATE);
-        buttonLightMode = findViewById(R.id.buttonLightMode);
-        buttonDarkMode = findViewById(R.id.buttonDarkMode);
-        toolbar = findViewById(R.id.toolbar);
+        Button buttonLightMode = findViewById(R.id.buttonLightMode);
+        Button buttonDarkMode = findViewById(R.id.buttonDarkMode);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        drawerLayout = findViewById(R.id.drawer_layout);
-        navigationView = findViewById(R.id.nav_view);
+        DrawerLayout drawerLayout = findViewById(R.id.drawer_layout);
+        NavigationView navigationView = findViewById(R.id.nav_view);
 
         // Setup navigation menu using navigationManager class
         navigationManager.setupNavigationMenu(this, drawerLayout, navigationView, toolbar);

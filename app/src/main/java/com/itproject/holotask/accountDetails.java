@@ -38,12 +38,8 @@ import java.util.Objects;
 
 public class accountDetails extends AppCompatActivity {
 
-    private DrawerLayout drawerLayout;
-    private NavigationView navigationView;
-    private Toolbar toolbar;
     private EditText editTextUsername, editTextUserDiscord, editTextNewPassword;
     private String currentUsername, currentDiscord;
-    private Button buttonSaveChanges;
     private FirebaseFirestore db;
     private FirebaseUser currentUser;
 
@@ -66,11 +62,11 @@ public class accountDetails extends AppCompatActivity {
 
         setContentView(R.layout.activity_account_details);
 
-        toolbar = findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        drawerLayout = findViewById(R.id.drawer_layout);
-        navigationView = findViewById(R.id.nav_view);
+        DrawerLayout drawerLayout = findViewById(R.id.drawer_layout);
+        NavigationView navigationView = findViewById(R.id.nav_view);
 
         // Setup navigation menu using existing navigationManager class
         navigationManager.setupNavigationMenu(this, drawerLayout, navigationView, toolbar);
@@ -148,7 +144,7 @@ public class accountDetails extends AppCompatActivity {
                 } else {
                     // Handle failure to load user data
                     Toast.makeText(accountDetails.this,
-                            "Failed to load user data: " + task.getException().getMessage(),
+                            "Failed to load user data: " + Objects.requireNonNull(task.getException()).getMessage(),
                             Toast.LENGTH_SHORT).show();
                 }
             }
@@ -360,7 +356,7 @@ public class accountDetails extends AppCompatActivity {
                         } else {
                             // Account deletion failed
                             Toast.makeText(accountDetails.this,
-                                    "Failed to delete account: " + task.getException().getMessage(),
+                                    "Failed to delete account: " + Objects.requireNonNull(task.getException()).getMessage(),
                                     Toast.LENGTH_SHORT).show();
                         }
                     }
@@ -410,7 +406,7 @@ public class accountDetails extends AppCompatActivity {
                         } else {
                             // Handle error retrieving tasks
                             Toast.makeText(accountDetails.this,
-                                    "Failed to delete user tasks: " + task.getException().getMessage(),
+                                    "Failed to delete user tasks: " + Objects.requireNonNull(task.getException()).getMessage(),
                                     LENGTH_SHORT).show();
                         }
                     }

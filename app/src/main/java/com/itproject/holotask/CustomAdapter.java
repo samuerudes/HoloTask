@@ -11,8 +11,8 @@ import java.util.List;
 
 public class CustomAdapter extends BaseAdapter {
 
-    private Context context;
-    private List<String[]> data;
+    private final Context context;
+    private final List<String[]> data;
 
     public CustomAdapter(Context context, List<String[]> data) {
         this.context = context;

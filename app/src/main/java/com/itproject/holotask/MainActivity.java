@@ -51,7 +51,6 @@ import java.util.UUID;
 
 public class MainActivity extends AppCompatActivity implements TaskDeletionHandler.OnTaskDeletedListener {
 
-    private DrawerLayout drawerLayout;
     private ActionBarDrawerToggle drawerToggle;
     private GridView gridView;
     private CustomAdapter adapter;
@@ -105,7 +104,7 @@ public class MainActivity extends AppCompatActivity implements TaskDeletionHandl
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        drawerLayout = findViewById(R.id.drawer_layout);
+        DrawerLayout drawerLayout = findViewById(R.id.drawer_layout);
         NavigationView navigationView = findViewById(R.id.nav_view);
         sharedPreferences = getSharedPreferences(getPackageName() + "_preferences", Context.MODE_PRIVATE);
         Switch notificationSwitch = appSettingsView.findViewById(R.id.switchNotif);

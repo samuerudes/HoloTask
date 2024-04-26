@@ -39,6 +39,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 public class register extends AppCompatActivity {
     Button googleAuth;
@@ -130,7 +131,6 @@ public class register extends AppCompatActivity {
                             public void onComplete(@NonNull Task<AuthResult> task) {
                                 if (task.isSuccessful()) {
                                     showToast("Account created successfully");
-
                                     // Proceed with Firestore document creation
                                     FirebaseUser user = auth.getCurrentUser();
                                     if (user != null) {
@@ -167,7 +167,7 @@ public class register extends AppCompatActivity {
                                     }
                                 } else {
                                     // Handle account creation failure
-                                    showToast("Account creation failed: " + task.getException().getMessage());
+                                    showToast("Account creation failed: " + Objects.requireNonNull(task.getException()).getMessage());
                                 }
                             }
                         });
@@ -224,7 +224,7 @@ public class register extends AppCompatActivity {
                 GoogleSignInAccount account = task.getResult(ApiException.class);
                 if (account != null) {
                     // Sign in with Firebase using Google credentials
-                    firebaseAuth(account.getIdToken());
+                    firebaseAuthWithGoogle(account.getIdToken());
                 } else {
                     showToast("Google Sign-In Failed");
                 }
@@ -234,7 +234,7 @@ public class register extends AppCompatActivity {
         }
     }
 
-    private void firebaseAuth(String idToken) {
+    private void firebaseAuthWithGoogle(String idToken) {
         if (auth == null) {
             showToast("FirebaseAuth instance is null");
             return;
@@ -242,7 +242,7 @@ public class register extends AppCompatActivity {
 
         AuthCredential credential = GoogleAuthProvider.getCredential(idToken, null);
         auth.signInWithCredential(credential)
-                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                .addOnCompleteListener(register.this, new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
@@ -293,7 +293,7 @@ public class register extends AppCompatActivity {
                                                                 });
                                                     }
                                                 } else {
-                                                    showToast("Firestore Error: " + task.getException().getMessage());
+                                                    showToast("Firestore Error: " + Objects.requireNonNull(task.getException()).getMessage());
                                                 }
                                             }
                                         });
