@@ -42,12 +42,10 @@ import java.util.Map;
 import java.util.Objects;
 
 public class register extends AppCompatActivity {
-    Button googleAuth;
-    FirebaseAuth auth;
-    GoogleSignInClient mGoogleSignInClient;
-    int RC_SIGN_IN = 20;
-    EditText editTextEmail, editTextPassword, editTextConfirmPassword;
-    Button buttonRegister;
+    private FirebaseAuth auth;
+    private GoogleSignInClient mGoogleSignInClient;
+    private final int RC_SIGN_IN = 20;
+    private EditText editTextEmail, editTextPassword, editTextConfirmPassword;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -100,7 +98,7 @@ public class register extends AppCompatActivity {
         editTextEmail = findViewById(R.id.email);
         editTextPassword = findViewById(R.id.password);
         editTextConfirmPassword = findViewById(R.id.confirmpassword);
-        buttonRegister = findViewById(R.id.registerbutton);
+        Button buttonRegister = findViewById(R.id.registerbutton);
 
         buttonRegister.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -183,7 +181,7 @@ public class register extends AppCompatActivity {
         mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
 
         // Set click listener for Google sign-in button
-        googleAuth = findViewById(R.id.btnContinueWithGoogle);
+        Button googleAuth = findViewById(R.id.btnContinueWithGoogle);
         googleAuth.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

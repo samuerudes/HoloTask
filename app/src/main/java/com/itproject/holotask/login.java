@@ -35,13 +35,10 @@ import java.util.List;
 import java.util.Objects;
 
 public class login extends AppCompatActivity {
-
-    EditText editTextEmail, editTextPassword;
-    Button buttonLogin, googleAuth;
-    FirebaseAuth auth;
-    FirebaseAuth mAuth;
-    GoogleSignInClient mGoogleSignInClient;
-    int RC_SIGN_IN = 20;
+    private EditText editTextEmail, editTextPassword;
+    private FirebaseAuth mAuth;
+    private GoogleSignInClient mGoogleSignInClient;
+    private final int RC_SIGN_IN = 20;
 
     @Override
     public void onStart() {
@@ -105,8 +102,8 @@ public class login extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
         editTextEmail = findViewById(R.id.email);
         editTextPassword = findViewById(R.id.password);
-        buttonLogin = findViewById(R.id.SignIn);
-        googleAuth = findViewById(R.id.btnSignInWithGoogle);
+        Button buttonLogin = findViewById(R.id.SignIn);
+        Button googleAuth = findViewById(R.id.btnSignInWithGoogle);
         mAuth = FirebaseAuth.getInstance();
 
         buttonLogin.setOnClickListener(new View.OnClickListener() {

@@ -196,7 +196,7 @@ public class accountDetails extends AppCompatActivity {
                 });
     }
 
-    private void updateUserName(final String newUsername) {
+    private void updateUserName(String newUsername) {
         // Check for duplicate usernames before updating
         Query usernameQuery = db.collection("Users").whereEqualTo("userName", newUsername);
         usernameQuery.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
@@ -412,5 +412,4 @@ public class accountDetails extends AppCompatActivity {
                     }
                 });
     }
-
 }
