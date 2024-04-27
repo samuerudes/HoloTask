@@ -11,31 +11,6 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 public class TaskDeletionHandler {
 
-    public static void deleteTask(final Context context, final String taskID) {
-        // Create an AlertDialog builder
-        AlertDialog.Builder builder = new AlertDialog.Builder(context);
-        builder.setTitle("Confirm Delete");
-        builder.setMessage("Are you sure you want to delete this task?");
-
-        // Positive and negative buttons
-        builder.setPositiveButton("Delete", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                deleteTask(context, taskID);  // Call delete method
-            }
-        });
-
-        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
-            }
-        });
-
-        // Show the confirmation dialog
-        builder.show();
-    }
-
     public interface OnTaskDeletedListener {
         void onTaskDeleted(String deletedTaskID);
     }
