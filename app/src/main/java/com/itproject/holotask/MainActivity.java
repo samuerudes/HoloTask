@@ -62,6 +62,14 @@ public class MainActivity extends AppCompatActivity implements TaskDeletionHandl
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+        if (currentUser == null) {
+            Intent loginIntent = new Intent(this, login.class);
+            startActivity(loginIntent);
+            finish();
+        }
+
         // Get the current theme mode from shared preferences
         // Initialize sharedPreferences
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
