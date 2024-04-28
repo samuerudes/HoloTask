@@ -49,7 +49,10 @@ public class login extends AppCompatActivity {
             startMainActivity();
         }
     }
-
+    @Override
+    public void onBackPressed() {
+        // Do nothing (override to disable back button functionality)
+    }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
