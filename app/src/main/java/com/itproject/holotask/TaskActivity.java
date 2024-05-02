@@ -131,10 +131,28 @@ public class TaskActivity extends AppCompatActivity {
         completeTaskButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                seekBar.setProgress(seekBar.getMax());
 
-                // Update task status to "Completed" in Firestore
-                updateTaskStatusToComplete(getIntent().getStringExtra("taskID"));
+                AlertDialog.Builder builder = new AlertDialog.Builder(TaskActivity.this);
+                builder.setTitle("COMPLETE TASK");
+                builder.setMessage("Are you sure you want to mark this task as completed?");
+
+                builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        // Call a method to update the task status to "Complete"
+                        updateTaskStatusToComplete(taskID);
+                        seekBar.setProgress(seekBar.getMax());
+                        dialog.dismiss(); // Dismiss the dialog
+                    }
+                });
+
+                builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss(); // Dismiss the dialog
+                    }
+                });
+                builder.show();
             }
         });
 
@@ -201,7 +219,25 @@ public class TaskActivity extends AppCompatActivity {
         deleteButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                TaskDeletionHandler.deleteTask(TaskActivity.this, taskID, null); // Pass context and taskID to delete method
+                AlertDialog.Builder builder = new AlertDialog.Builder(TaskActivity.this);
+                builder.setTitle("DELETE TASK");
+                builder.setMessage("Are you sure you want to delete this task?");
+
+                builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        // Call a method to delete the task
+                        TaskDeletionHandler.deleteTask(TaskActivity.this, taskID, null);
+                        dialog.dismiss(); // Dismiss the dialog
+                    }
+                });
+                builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss(); // Dismiss the dialog
+                    }
+                });
+                builder.show();
             }
         });
 
