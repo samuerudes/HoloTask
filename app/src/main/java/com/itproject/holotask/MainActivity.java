@@ -63,13 +63,6 @@ public class MainActivity extends AppCompatActivity implements TaskDeletionHandl
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
-        if (currentUser == null) {
-            Intent loginIntent = new Intent(this, login.class);
-            startActivity(loginIntent);
-            finish();
-        }
-
         // Get the current theme mode from shared preferences
         // Initialize sharedPreferences
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
@@ -140,26 +133,6 @@ public class MainActivity extends AppCompatActivity implements TaskDeletionHandl
 
         // Set up navigation menu using navigationManager
         navigationManager.setupNavigationMenu(MainActivity.this, drawerLayout, navigationView, toolbar);
-
-        // Retrieve the username from Firestore
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        if (user != null) {
-            FirebaseFirestore db = FirebaseFirestore.getInstance();
-            String userId = user.getUid();
-
-            db.collection("Users")
-                    .document(userId)
-                    .get()
-                    .addOnSuccessListener(documentSnapshot -> {
-                        if (documentSnapshot.exists()) {
-                            String username = documentSnapshot.getString("userName");
-                            greetingTextView.setText("Hello, " + username + "!");
-                        }
-                    })
-                    .addOnFailureListener(e -> {
-                        Log.e("MainActivity", "Error fetching username", e);
-                    });
-        }
 
         // Fetch tasks from Firestore and populate the GridView
         retrieveTasksFromFirestore();
