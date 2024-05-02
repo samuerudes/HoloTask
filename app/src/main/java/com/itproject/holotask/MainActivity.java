@@ -93,7 +93,7 @@ public class MainActivity extends AppCompatActivity implements TaskDeletionHandl
         View itemView = inflater.inflate(R.layout.grid_item, null);
         LinearLayout taskLayout = itemView.findViewById(R.id.taskLayout);
 
-    // Set the background color based on the theme mode
+        // Set the background color based on the theme mode
         if (isDarkMode) {
             taskLayout.setBackgroundColor(ContextCompat.getColor(this, R.color.darkBackgroundColor));
         } else {
@@ -110,8 +110,6 @@ public class MainActivity extends AppCompatActivity implements TaskDeletionHandl
         sharedPreferences = getSharedPreferences(getPackageName() + "_preferences", Context.MODE_PRIVATE);
         Switch notificationSwitch = appSettingsView.findViewById(R.id.switchNotif);
         notificationSwitch.setChecked(sharedPreferences.getBoolean(SHARED_PREFS_KEY, true)); // Set switch state based on saved preference
-        View headerView = navigationView.getHeaderView(0);
-        TextView greetingTextView = headerView.findViewById(R.id.greetingTextView);
         gridView = findViewById(R.id.gridView);
 
         toolbar.setNavigationIcon(R.drawable.baseline_arrow_back_ios_24);

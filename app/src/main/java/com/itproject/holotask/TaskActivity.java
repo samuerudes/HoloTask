@@ -156,7 +156,7 @@ public class TaskActivity extends AppCompatActivity {
             }
         });
 
-// Format deadline string to Date object (assuming format matches parsing)
+        // Format deadline string to Date object (assuming format matches parsing)
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");  // Adjust format if needed
         Date deadlinecalc;
         try {
@@ -168,11 +168,11 @@ public class TaskActivity extends AppCompatActivity {
             return;
         }
 
-// Get current time in milliseconds
+        // Get current time in milliseconds
         Calendar nowCalendar = Calendar.getInstance();
         long now = nowCalendar.getTimeInMillis();
 
-// Adjust deadline to 12:00 AM of the following day
+        // Adjust deadline to 12:00 AM of the following day
         Calendar deadlineCalendar = Calendar.getInstance();
         deadlineCalendar.setTime(deadlinecalc);
         deadlineCalendar.set(Calendar.HOUR_OF_DAY, 0);
