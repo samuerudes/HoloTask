@@ -31,6 +31,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Locale;
 
 public class TaskActivity extends AppCompatActivity {
 
@@ -96,7 +97,7 @@ public class TaskActivity extends AppCompatActivity {
                         // Update status to "Ongoing" only if it's not already "Overdue"
                         updateTaskStatusToOngoing(taskID);
                         // Show toast only if the task is not overdue
-                        Toast.makeText(TaskActivity.this, "Task successfully updated to Ongoing", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(TaskActivity.this, "Task status successfully updated!", Toast.LENGTH_SHORT).show();
                     }
                 } else if (progress == seekBar.getMax() && !status.equals("Completed")) {
                     // Update task status to "Completed" in Firestore only if it's not already "Completed"
@@ -589,7 +590,7 @@ public class TaskActivity extends AppCompatActivity {
                                 .update("taskStatus", "Ongoing")
                                 .addOnSuccessListener(aVoid -> {
                                     // Show a toast indicating success
-                                    Toast.makeText(TaskActivity.this, "Task status updated to Ongoing!", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(TaskActivity.this, "Task status successfully updated!", Toast.LENGTH_SHORT).show();
 
                                     // Redirect to MainActivity upon successful update
                                     redirectToMainActivity();
