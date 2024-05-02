@@ -22,6 +22,9 @@ import android.widget.Toast;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
+
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import java.text.ParseException;
@@ -36,6 +39,8 @@ public class TaskActivity extends AppCompatActivity {
     TextView descTextView;
     private TextView timeRemainTextView;
     private String deadline;
+    private TextView progressTextView;
+    private SeekBar seekBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,6 +49,7 @@ public class TaskActivity extends AppCompatActivity {
         // Get the current theme mode from shared preferences
         SharedPreferences sharedPref1 = PreferenceManager.getDefaultSharedPreferences(this);
         boolean isDarkMode = sharedPref1.getBoolean("theme_mode", false);
+
 
         // Apply the theme based on the saved mode
         if (isDarkMode) {
@@ -66,16 +72,39 @@ public class TaskActivity extends AppCompatActivity {
         Button editButton = findViewById(R.id.editTaskButton);
         Button deleteButton = findViewById(R.id.deleteTaskButton);
         Button completeTaskButton = findViewById(R.id.completeTaskButton);
-        SeekBar seekBar = findViewById(R.id.seekBar);
         timeRemainTextView = findViewById(R.id.timeRemain);
+        progressTextView = findViewById(R.id.progressTextView);
+        seekBar = findViewById(R.id.seekBar);
 
         SharedPreferences sharedPref = getSharedPreferences("taskProgress", MODE_PRIVATE);
 
+        // Retrieve saved progress
+        int savedProgress = sharedPref.getInt(getIntent().getStringExtra("taskID"), 0);
+        progressTextView.setText(savedProgress + "%");
+        seekBar.setProgress(savedProgress);
 
         backButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(TaskActivity.this, MainActivity.class);  // Replace "this" with your current activity class name
+                int progress = seekBar.getProgress();
+                String taskID = getIntent().getStringExtra("taskID");
+                String status = getIntent().getStringExtra("status");
+
+                if (progress != seekBar.getMax() && !status.equals("Ongoing")) {
+                    // Update task status to "Ongoing" in Firestore only if it's not already "Ongoing"
+                    if (!status.equals("Overdue")) {
+                        // Update status to "Ongoing" only if it's not already "Overdue"
+                        updateTaskStatusToOngoing(taskID);
+                        // Show toast only if the task is not overdue
+                        Toast.makeText(TaskActivity.this, "Task successfully updated to Ongoing", Toast.LENGTH_SHORT).show();
+                    }
+                } else if (progress == seekBar.getMax() && !status.equals("Completed")) {
+                    // Update task status to "Completed" in Firestore only if it's not already "Completed"
+                    updateTaskStatusToComplete(taskID);
+                    Toast.makeText(TaskActivity.this, "Task successfully updated to Completed", Toast.LENGTH_SHORT).show();
+                }
+
+                Intent intent = new Intent(TaskActivity.this, MainActivity.class);
                 startActivity(intent);
             }
         });
@@ -102,8 +131,10 @@ public class TaskActivity extends AppCompatActivity {
         completeTaskButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // Call a method to update the task status to "Complete"
-                updateTaskStatusToComplete(taskID);
+                seekBar.setProgress(seekBar.getMax());
+
+                // Update task status to "Completed" in Firestore
+                updateTaskStatusToComplete(getIntent().getStringExtra("taskID"));
             }
         });
 
@@ -180,6 +211,9 @@ public class TaskActivity extends AppCompatActivity {
                 // Update progress in SharedPreferences
                 SharedPreferences sharedPref = getSharedPreferences("taskProgress", MODE_PRIVATE);
                 sharedPref.edit().putInt(taskID, progress).apply();
+                int progressPercent = (int) ((float) progress / seekBar.getMax() * 100);
+                progressTextView.setText(progressPercent + "%");
+                sharedPref.edit().putInt(getIntent().getStringExtra("taskID"), progress).apply();
             }
 
             @Override
@@ -390,8 +424,19 @@ public class TaskActivity extends AppCompatActivity {
                 String editedDescription = descriptionInput.getText().toString();
                 String editedStatus = statusSpinner.getSelectedItem().toString();
 
+
+                if (status.equals("Completed") && editedStatus.equals("Ongoing")) {
+                    // Set the seekbar progress to 0%
+                    seekBar.setProgress(0);
+                }
+
+                if ((status.equals("Ongoing") || status.equals("Overdue")) && editedStatus.equals("Completed")) {
+                    // Set the seekbar progress to 100%
+                    seekBar.setProgress(seekBar.getMax());
+                }
+
                 // Check if the status is being changed from "Ongoing" or "Completed" to "Overdue"
-                if ((status.equals("Ongoing") || status.equals("Completed")) && editedStatus.equals("Overdue")) {
+                if (status.equals("Completed") && editedStatus.equals("Overdue")) {
                     // Parse the edited and current deadline dates
                     SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
                     Date editedDeadlineDate;
@@ -407,14 +452,37 @@ public class TaskActivity extends AppCompatActivity {
                     }
 
                     // Compare the edited deadline date with the current date
-                    if (editedDeadlineDate.after(currentDate)) {
-                        // If edited deadline date is after the current date, keep the status unchanged
+                    if (editedDeadlineDate.after(currentDate) || editedDeadlineDate.equals(currentDate)) {
+                        // If edited deadline date is after or same as the current date, keep the status unchanged and set seekbar progress to 100%
                         Toast.makeText(TaskActivity.this, "Unable to edit, please update the DATE accordingly.", Toast.LENGTH_SHORT).show();
                         return;
-                    } else if (editedDeadlineDate.equals(currentDate)) {
-                        // If edited deadline date is the same as the current date, keep the status unchanged
+
+                    } else {
+                        seekBar.setProgress(0);
+                    }
+                }
+
+                if (status.equals("Ongoing")  && editedStatus.equals("Overdue")){
+                    // Parse the edited and current deadline dates
+                    SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+                    Date editedDeadlineDate;
+                    Date currentDate;
+                    try {
+                        editedDeadlineDate = dateFormat.parse(editedDeadline);
+                        currentDate = dateFormat.parse(dateFormat.format(new Date()));
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                        // Handle parsing error
+                        Toast.makeText(TaskActivity.this, "Invalid deadline format", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+
+                    // Compare the edited deadline date with the current date
+                    if (editedDeadlineDate.after(currentDate) || editedDeadlineDate.equals(currentDate)) {
+                        // If edited deadline date is after or same as the current date, keep the status unchanged and set seekbar progress to 100%
                         Toast.makeText(TaskActivity.this, "Unable to edit, please update the DATE accordingly.", Toast.LENGTH_SHORT).show();
                         return;
+
                     }
                 }
 
@@ -437,7 +505,7 @@ public class TaskActivity extends AppCompatActivity {
                     // Compare the edited deadline date with the current date
                     if (editedDeadlineDate.before(currentDate)) {
                         // If edited deadline date is before the current date, keep the status unchanged
-                        Toast.makeText(TaskActivity.this, "Unable to edit, please update the Date accordingly.", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(TaskActivity.this, "Unable to edit, please update the DATE accordingly.", Toast.LENGTH_SHORT).show();
                         return;
                     }
                 }
@@ -470,6 +538,36 @@ public class TaskActivity extends AppCompatActivity {
     private String formatDate(Date date) {
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
         return dateFormat.format(date);
+    }
+    private void updateTaskStatusToOngoing(String taskID) {
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+        db.collection("UserTasks")
+                .whereEqualTo("taskID", taskID)
+                .get()
+                .addOnSuccessListener(queryDocumentSnapshots -> {
+                    for (QueryDocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
+                        // Update the task status to "Ongoing"
+                        db.collection("UserTasks")
+                                .document(documentSnapshot.getId())
+                                .update("taskStatus", "Ongoing")
+                                .addOnSuccessListener(aVoid -> {
+                                    // Show a toast indicating success
+                                    Toast.makeText(TaskActivity.this, "Task status updated to Ongoing!", Toast.LENGTH_SHORT).show();
+
+                                    // Redirect to MainActivity upon successful update
+                                    redirectToMainActivity();
+                                })
+                                .addOnFailureListener(e -> {
+                                    // Show a toast indicating failure
+                                    Toast.makeText(TaskActivity.this, "Failed to update task status!", Toast.LENGTH_SHORT).show();
+                                });
+                    }
+                })
+                .addOnFailureListener(e -> {
+                    // Show a toast indicating failure to retrieve the document
+                    Toast.makeText(TaskActivity.this, "Failed to retrieve task!", Toast.LENGTH_SHORT).show();
+                });
     }
 
     private void updateTaskStatusToComplete(String taskID) {
